@@ -1,0 +1,77 @@
+{
+  "tasks": [],
+  "events": [
+    {
+      "id": "27548591-a78e-404a-8258-42ec87bdc945",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777064176761
+    },
+    {
+      "id": "73d93131-665c-4d4e-91ba-abcb7f8d5a7a",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777064183723
+    },
+    {
+      "id": "42f2497b-b54e-456e-8a6e-ff13ee277c5b",
+      "type": "auth",
+      "title": "Регистрация: modtest",
+      "details": {
+        "role": "pending"
+      },
+      "createdAt": 1777064196118
+    },
+    {
+      "id": "e78da72b-251f-42fb-be22-e28a47c395d2",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777064196144
+    }
+  ],
+  "chats": [],
+  "reports": [],
+  "kills": [],
+  "alerts": [],
+  "bans": [],
+  "mutes": [],
+  "counters": {
+    "stateUpdates": 0,
+    "chatMessages": 0,
+    "reports": 0,
+    "kills": 0,
+    "tasksCreated": 0,
+    "tasksCompleted": 0
+  },
+  "users": [
+    {
+      "id": "8d573950-cd2e-48b9-b123-fa08c89dafbd",
+      "username": "admin",
+      "displayName": "Owner",
+      "role": "owner",
+      "active": true,
+      "passwordHash": "7821967fffff063df96b54be7c4aeeca:442ba696f91983fb20a8ced8f2e37cacb31e2520c1549de328613e38a69660dd",
+      "createdAt": 1777064175830,
+      "lastLoginAt": 1777064196144
+    },
+    {
+      "id": "4a850ae5-b25c-4b9e-bf33-acd6176ad1dd",
+      "username": "modtest",
+      "displayName": "Mod Test",
+      "role": "pending",
+      "active": false,
+      "passwordHash": "55126e313e35a3c380c478fab6c8e9fb:c18534560c3975e1a0da798343ceade14af7248492cd1d44e4fd44f24c2fa4f1",
+      "createdAt": 1777064196118,
+      "lastLoginAt": null
+    }
+  ]
+}

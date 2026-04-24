@@ -1,0 +1,1571 @@
+{
+  "server": {
+    "name": "My Untitled Rust Server",
+    "hostname": "My Untitled Rust Server",
+    "level": "Procedural Map",
+    "level_url": "https://files.facepunch.com/rust/maps/2f1815b21870b14654e8f583f2eb5177564b39dc18c995d7af3f49709038c7d6/proceduralmap.4500.1337.283_2f1815b21870b14654e8f583f2eb5177.map",
+    "level_image_url": "https://files.facepunch.com/rust/map-images/a4ec5fb69f83d3b6d2e3cd5b74d8e53fb91469990ed4ffa48725ce87eb2e48d9/proceduralmap.4500.1337.283_a4ec5fb69f83d3b6d2e3cd5b74d8e53f.jpg",
+    "description": "No server description has been provided. ",
+    "branch": "",
+    "avatar_big": "",
+    "avatar_url": "",
+    "banner_url": "",
+    "online": 1,
+    "slots": 500,
+    "reserved": 0,
+    "version": "2.5.4",
+    "protocol": "2623.283.1",
+    "performance": "0.146594100000003",
+    "port": 28015,
+    "connected": true
+  },
+  "players": [
+    {
+      "steam_id": "76561199822109193",
+      "steam_name": "JCDRMVPQ",
+      "ip": "127.0.0.1",
+      "ping": 1,
+      "seconds_connected": 3520,
+      "language": "ru",
+      "position": "(-1749.73, 1.91, 1196.70)",
+      "rotation": "(0.05490, -0.61388, -0.04286, -0.78632)",
+      "coords": "D7",
+      "can_build": false,
+      "is_raiding": false,
+      "no_license": false,
+      "is_alive": true,
+      "status": "active",
+      "meta": {
+        "tags": {},
+        "fields": {}
+      },
+      "team": []
+    }
+  ],
+  "disconnected": {},
+  "teamChanges": {},
+  "tasks": [],
+  "events": [
+    {
+      "id": "93d540bc-7fb4-46d0-af66-25c22ad94f37",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777065300234
+    },
+    {
+      "id": "1eb3c44c-d266-421c-9692-4be09d75738d",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777065303435
+    },
+    {
+      "id": "4e36b3ab-7eeb-47d8-991a-d276592e6d7f",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777065308272
+    },
+    {
+      "id": "37c5052c-d083-46a3-a15b-e10e94d7ef24",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777065388384
+    },
+    {
+      "id": "510daca8-cb58-42b2-b8a0-995965c9ab67",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777065412799
+    },
+    {
+      "id": "fb41fa6b-5485-4491-a311-6a589331dc75",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777065655288
+    },
+    {
+      "id": "c8129e67-90a6-49ab-8405-c33cfdfbdf09",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777065658240
+    },
+    {
+      "id": "a91d16d7-4352-42aa-9024-1016e5606caf",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777065803613
+    },
+    {
+      "id": "84f1aee1-fe98-4b14-80e4-253310e9661a",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777066005640
+    },
+    {
+      "id": "ee82853a-737c-4ce7-a0fc-d70ac33913a6",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777066075443
+    },
+    {
+      "id": "241da339-5166-4d6d-a270-b166a9a191c1",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777066523300
+    },
+    {
+      "id": "8494fff6-eaed-40e5-9cd7-d248fbba92f5",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777066637997
+    },
+    {
+      "id": "528ed420-5fcf-4eb3-bd25-cab76236b3a0",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777067496240
+    },
+    {
+      "id": "f5dccdf8-41ed-4787-8152-f5f3566ea1f0",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777068387213
+    },
+    {
+      "id": "95ff635e-bccd-4ffa-969e-3502e581a505",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777068398235
+    },
+    {
+      "id": "85d6bd9b-a4d8-482f-b163-7d4a36ba5488",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777068402141
+    },
+    {
+      "id": "375a5982-ed5a-48cf-94d1-4e2126185023",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777068408291
+    },
+    {
+      "id": "6999bc91-1d64-4154-a35e-4507be54b30b",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777068491540
+    },
+    {
+      "id": "bfd660c1-3dae-4ebf-91fd-4914a0ce391a",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777068680472
+    },
+    {
+      "id": "b225a21c-c515-4d20-b1c5-088bbfea3c69",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777068901746
+    },
+    {
+      "id": "18b1d0e9-2ff6-42ca-b4fc-73be81122971",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777069002040
+    },
+    {
+      "id": "3dcbbabc-2c6f-4722-9c6c-36f42f75f88d",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777069015172
+    },
+    {
+      "id": "3a4ef07d-cb58-490f-9706-9dec3f340960",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777069149428
+    },
+    {
+      "id": "6ef43925-bdfe-4857-af08-0381eda14b08",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777069169598
+    },
+    {
+      "id": "9fcfec98-6600-4a07-9ec0-84e7db493893",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777069384204
+    },
+    {
+      "id": "9026d84b-ace7-42aa-b5c7-76b85b452895",
+      "type": "auth",
+      "title": "Вход: admin",
+      "details": {
+        "role": "owner"
+      },
+      "createdAt": 1777069598699
+    }
+  ],
+  "chats": [],
+  "reports": [],
+  "kills": [],
+  "alerts": [],
+  "sleepingBags": [],
+  "signages": [],
+  "contacts": [],
+  "bans": [],
+  "mutes": [],
+  "metricsHistory": [
+    {
+      "ts": 1777069020939,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069030933,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069155943,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069170946,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069180945,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069185957,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069200949,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069205959,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069225959,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069235964,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069255955,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069270956,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069275966,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069280966,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 1,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069286015,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 1,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069295963,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 1,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069310961,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069315968,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069325965,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069330970,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069335981,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069341032,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069360961,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069375961,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069385953,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069410955,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069415956,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069425960,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069440977,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069460961,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069470960,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069475968,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069481038,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069490957,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069590959,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069605959,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069610974,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069615987,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069625985,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069635965,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069640974,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069655955,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069665960,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069670972,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069685952,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069695957,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069705960,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069715966,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069725959,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069735955,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069740968,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069750953,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069755970,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069786015,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069791031,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069796117,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069806115,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069811138,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069816139,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069831120,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069841119,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069851162,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069856200,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069861366,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069866369,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069871371,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069876412,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069896385,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069906373,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069916418,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069926448,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069936446,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069941451,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069951442,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069961444,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069966468,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069976438,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777069986463,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070001453,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070011449,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070016459,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070026454,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070041445,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070046452,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070056442,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070061450,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070071438,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070076443,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070086450,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070101443,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070106682,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070116690,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070121691,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070126691,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070136696,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070146679,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070161905,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070166930,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070186902,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070191911,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070201905,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070206905,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070211957,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070217002,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070231898,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070246904,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070251924,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070261897,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070266988,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070276979,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070296911,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070301924,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070316915,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 0,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    },
+    {
+      "ts": 1777070321915,
+      "online": 1,
+      "queued": 0,
+      "joining": 0,
+      "avgPing": 1,
+      "pendingTasks": 0,
+      "reports": 0,
+      "kills": 0,
+      "alerts": 0
+    }
+  ],
+  "users": [
+    {
+      "id": "0d4a9567-55ed-4933-9ae2-5573bdd129a1",
+      "username": "admin",
+      "displayName": "RUST .NET Owner",
+      "role": "owner",
+      "active": true,
+      "passwordHash": "573a6b0115737912d5ad5a31c51ab8ed:c42fe54b0d3a245b81efe9356ecf8b9b517b3bcdb5a236231446848876d2f2cf",
+      "createdAt": 1777065281874,
+      "lastLoginAt": 1777069598698
+    }
+  ],
+  "counters": {
+    "stateUpdates": 635,
+    "chatMessages": 0,
+    "reports": 0,
+    "kills": 0,
+    "tasksCreated": 0,
+    "tasksCompleted": 0
+  },
+  "lastPluginSeenAt": 1777070321914,
+  "startedAt": 1777069585545
+}
