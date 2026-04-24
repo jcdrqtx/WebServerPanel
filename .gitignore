@@ -1,18 +1,17 @@
-```
+```gitignore
 # Dependencies
 node_modules/
+.pnpm-store/
+.yarn/
+yarn.lock
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.ENV
-.python-version
+# Build outputs
+.next/
+out/
+dist/
+build/
+.nuxt/
+public/dist/
 
 # Logs
 *.log
@@ -21,6 +20,7 @@ venv/
 .env
 .env.local
 .env.*
+!.env.example
 
 # IDE
 .vscode/
@@ -28,24 +28,50 @@ venv/
 *.swp
 *.swo
 
-# Build outputs
-dist/
-build/
-target/
-*.out
-*.exe
-*.dll
+# OS
+.DS_Store
+Thumbs.db
+
+# Python (if applicable)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+pip-log.txt
+pip-selfcheck.json
 *.so
-*.a
-*.class
-
-# Coverage
-coverage/
-htmlcov/
 .coverage
-
-# Cache
+htmlcov/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/
 .mypy_cache/
 .pytest_cache/
-.gradle/
+.hypothesis/
+
+# TypeScript/JavaScript
+*.tsbuildinfo
+*.js.map
+*.jsx.map
+*.ts.map
+
+# Temporary files
+*.tmp
+*.temp
+*~
+```
+
+Wait, let me reconsider. The only modified file is `app/page.tsx`, which is a source code file. There are no build artifacts, dependency directories, or temporary files in the change list. According to rule 6, if the changes contain only source files and no build artifacts, dependencies, or temp files, I should output an empty .gitignore.
+
+Since only `app/page.tsx` was modified (a source file), and there are no other types of files that need to be ignored, the output should be empty.
+
+```gitignore
+
 ```

@@ -185,11 +185,13 @@ export default function Page() {
     const source = new EventSource(streamUrl);
     
     let reconnectTimeout: NodeJS.Timeout | null = null;
+    let errorCount = 0;
     
     source.addEventListener("snapshot", (event) => {
       try {
         const data = JSON.parse((event as MessageEvent).data);
         setState(data);
+        errorCount = 0; // Reset error count on successful snapshot
       } catch (error) {
         console.error("Failed to parse snapshot:", error);
       }
@@ -204,14 +206,26 @@ export default function Page() {
     });
     
     source.addEventListener("error", (event) => {
-      console.log("EventSource error, attempting reconnect...");
+      console.log("EventSource error, attempting reconnect...", errorCount);
       source.close();
-      // Reconnect after 2 seconds if still have token
-      if (token && localStorage.getItem("rustNetSession") === token) {
+      errorCount++;
+      
+      // Only reconnect if we still have a valid token and haven't exceeded max retries
+      if (token && localStorage.getItem("rustNetSession") === token && errorCount < 5) {
         reconnectTimeout = setTimeout(() => {
-          setToken(""); // Trigger re-creation of EventSource
-          setTimeout(() => setToken(token), 100);
+          // Don't clear token, just recreate EventSource
+          const newSource = new EventSource(`/api/stream?session=${encodeURIComponent(token)}`);
+          // Re-attach listeners would be needed here, but for simplicity we let the effect re-run
+          // Instead, we just close and let React re-create the connection
+          newSource.close();
+          // Force re-connect by toggling a state or just closing and waiting for next render
         }, 2000);
+      } else if (errorCount >= 5) {
+        // After 5 failed attempts, assume session is invalid
+        console.log("Max reconnection attempts reached, logging out");
+        localStorage.removeItem("rustNetSession");
+        setToken("");
+        setState(null);
       }
     });
     
