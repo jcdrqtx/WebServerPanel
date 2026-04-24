@@ -156,84 +156,149 @@ export default function Page() {
   const [statusFilter, setStatusFilter] = useState("");
   const [eventFilter, setEventFilter] = useState("");
   const [usersData, setUsersData] = useState<any>(null);
+  const [isSessionValid, setIsSessionValid] = useState<boolean | null>(null);
 
+  // Проверка сессии только один раз при монтировании
   useEffect(() => {
     const saved = localStorage.getItem("rustNetSession");
     if (saved) {
       setToken(saved);
-      // Validate session before fetching state
+      // Валидируем сессию перед загрузкой состояния
       fetch("/api/state", {
         headers: { Authorization: `Bearer ${saved}` }
       }).then(async (res) => {
         if (!res.ok) {
-          // Session is invalid, clear it
+          // Сессия невалидна, очищаем
+          console.log("Session invalid on load, clearing token");
           localStorage.removeItem("rustNetSession");
           setToken("");
+          setIsSessionValid(false);
         } else {
+          setIsSessionValid(true);
           fetchState(saved);
         }
-      }).catch(() => {
-        localStorage.removeItem("rustNetSession");
-        setToken("");
+      }).catch((err) => {
+        console.error("Session validation error:", err);
+        // При ошибке сети не сбрасываем сессию - это может быть временная проблема
+        setIsSessionValid(true);
+        fetchState(saved);
       });
+    } else {
+      setIsSessionValid(false);
     }
   }, []);
 
+  // Подключение к EventSource только после успешной валидации сессии
   useEffect(() => {
-    if (!token) return;
-    const streamUrl = `/api/stream?session=${encodeURIComponent(token)}`;
-    const source = new EventSource(streamUrl);
+    if (!token || isSessionValid !== true) return;
     
+    let source: EventSource | null = null;
     let reconnectTimeout: NodeJS.Timeout | null = null;
     let errorCount = 0;
-    
-    source.addEventListener("snapshot", (event) => {
-      try {
-        const data = JSON.parse((event as MessageEvent).data);
-        setState(data);
-        errorCount = 0; // Reset error count on successful snapshot
-      } catch (error) {
-        console.error("Failed to parse snapshot:", error);
-      }
-    });
-    
-    source.addEventListener("event", (event) => {
-      try {
-        notify(JSON.parse((event as MessageEvent).data).title || "Новое событие");
-      } catch (error) {
-        console.error("Failed to parse event:", error);
-      }
-    });
-    
-    source.addEventListener("error", (event) => {
-      console.log("EventSource error, attempting reconnect...", errorCount);
-      source.close();
-      errorCount++;
+    let isClosed = false;
+    const MAX_RECONNECT_ATTEMPTS = 10;
+    const RECONNECT_DELAY = 3000;
+
+    const connect = () => {
+      if (isClosed) return;
       
-      // Only reconnect if we still have a valid token and haven't exceeded max retries
-      if (token && localStorage.getItem("rustNetSession") === token && errorCount < 5) {
-        reconnectTimeout = setTimeout(() => {
-          // Don't clear token, just recreate EventSource
-          const newSource = new EventSource(`/api/stream?session=${encodeURIComponent(token)}`);
-          // Re-attach listeners would be needed here, but for simplicity we let the effect re-run
-          // Instead, we just close and let React re-create the connection
-          newSource.close();
-          // Force re-connect by toggling a state or just closing and waiting for next render
-        }, 2000);
-      } else if (errorCount >= 5) {
-        // After 5 failed attempts, assume session is invalid
-        console.log("Max reconnection attempts reached, logging out");
-        localStorage.removeItem("rustNetSession");
-        setToken("");
-        setState(null);
+      try {
+        source = new EventSource(`/api/stream?session=${encodeURIComponent(token)}`);
+        
+        source.addEventListener("snapshot", (event) => {
+          try {
+            const data = JSON.parse((event as MessageEvent).data);
+            setState(data);
+            errorCount = 0; // Сброс счетчика ошибок при успешном получении snapshot
+            setIsSessionValid(true);
+          } catch (error) {
+            console.error("Failed to parse snapshot:", error);
+          }
+        });
+        
+        source.addEventListener("event", (event) => {
+          try {
+            notify(JSON.parse((event as MessageEvent).data).title || "Новое событие");
+          } catch (error) {
+            console.error("Failed to parse event:", error);
+          }
+        });
+        
+        source.addEventListener("error", (event) => {
+          console.log(`EventSource error (attempt ${errorCount + 1}/${MAX_RECONNECT_ATTEMPTS})`);
+          errorCount++;
+          
+          // Закрываем текущее соединение
+          if (source) {
+            source.close();
+            source = null;
+          }
+          
+          // Проверяем, все еще ли токен актуален
+          const currentToken = localStorage.getItem("rustNetSession");
+          if (currentToken !== token) {
+            console.log("Token changed, stopping reconnection");
+            return;
+          }
+          
+          // Попытка переподключения
+          if (errorCount < MAX_RECONNECT_ATTEMPTS) {
+            console.log(`Scheduling reconnect in ${RECONNECT_DELAY}ms...`);
+            reconnectTimeout = setTimeout(() => {
+              if (!isClosed) {
+                connect();
+              }
+            }, RECONNECT_DELAY);
+          } else {
+            // После максимального количества попыток проверяем сессию явно
+            console.log("Max reconnection attempts reached, validating session...");
+            fetch("/api/state", {
+              headers: { Authorization: `Bearer ${token}` }
+            }).then((res) => {
+              if (!res.ok) {
+                console.log("Session confirmed invalid, logging out");
+                localStorage.removeItem("rustNetSession");
+                setToken("");
+                setState(null);
+                setIsSessionValid(false);
+              } else {
+                console.log("Session still valid, resetting error count and reconnecting");
+                errorCount = 0;
+                if (!isClosed) {
+                  connect();
+                }
+              }
+            }).catch(() => {
+              // При ошибке сети предполагаем что сессия все еще валидна
+              console.log("Network error during validation, keeping session");
+              errorCount = 0;
+              if (!isClosed) {
+                connect();
+              }
+            });
+          }
+        });
+        
+        source.addEventListener("open", () => {
+          console.log("EventSource connection established");
+        });
+      } catch (error) {
+        console.error("Failed to create EventSource:", error);
+        errorCount++;
       }
-    });
+    };
+
+    connect();
     
     return () => {
+      isClosed = true;
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
-      source.close();
+      if (source) {
+        source.close();
+        source = null;
+      }
     };
-  }, [token]);
+  }, [token, isSessionValid]);
 
   const user = state?.auth?.user;
   const can = (permission: Permission) => Boolean(user?.permissions.includes(permission));
@@ -260,10 +325,26 @@ export default function Page() {
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (response.status === 401 && session === token && localStorage.getItem("rustNetSession") === session) {
-        localStorage.removeItem("rustNetSession");
-        setToken("");
-        setState(null);
+      // При 401 ошибке сначала проверяем сессию явно, прежде чем сбрасывать
+      if (response.status === 401 && session === token) {
+        console.log("API returned 401, validating session...");
+        try {
+          const validationRes = await fetch("/api/state", {
+            headers: { Authorization: `Bearer ${session}` }
+          });
+          if (!validationRes.ok) {
+            console.log("Session confirmed invalid by /api/state, logging out");
+            localStorage.removeItem("rustNetSession");
+            setToken("");
+            setState(null);
+            setIsSessionValid(false);
+          } else {
+            console.log("Session still valid despite 401, keeping session");
+          }
+        } catch (err) {
+          console.error("Error during session validation:", err);
+          // При ошибке проверки не сбрасываем сессию
+        }
       }
       throw new Error(data.error || `HTTP ${response.status}`);
     }
@@ -354,7 +435,20 @@ export default function Page() {
     if (tab === "users") loadUsers();
   }, [tab, state?.auth?.user?.role]);
 
-  if (!token || !state?.auth?.user) {
+  // Показываем экран авторизации только если сессия явно невалидна или токена нет
+  // isSessionValid === null означает что проверка еще идет - показываем загрузку
+  if (isSessionValid === null) {
+    return (
+      <div className="auth-screen" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#0f0f13' }}>
+        <div style={{ textAlign: 'center', color: '#fff' }}>
+          <div style={{ fontSize: '24px', marginBottom: '16px' }}>RUST .NET</div>
+          <div style={{ opacity: 0.7 }}>Загрузка...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!token || !state?.auth?.user || isSessionValid === false) {
     return <AuthScreen mode={authMode} setMode={setAuthMode} submitAuth={submitAuth} toast={toast} />;
   }
 

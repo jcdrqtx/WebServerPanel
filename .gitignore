@@ -1,77 +1,78 @@
-```gitignore
 # Dependencies
 node_modules/
-.pnpm-store/
-.yarn/
-yarn.lock
 
 # Build outputs
-.next/
-out/
 dist/
 build/
-.nuxt/
-public/dist/
-
-# Logs
-*.log
+.next/
+out/
 
 # Environment variables
 .env
 .env.local
-.env.*
-!.env.example
+*.env.*
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Python (if applicable)
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+env/
 venv/
 .venv/
-pip-log.txt
-pip-selfcheck.json
-*.so
-.coverage
-htmlcov/
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
+.ENV
+
+# Logs
 *.log
-.git/
-.mypy_cache/
-.pytest_cache/
-.hypothesis/
 
-# TypeScript/JavaScript
-*.tsbuildinfo
-*.js.map
-*.jsx.map
-*.ts.map
+# OS generated files
+.DS_Store
+Thumbs.db
 
-# Temporary files
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
 *.tmp
-*.temp
-*~
-```
 
-Wait, let me reconsider. The only modified file is `app/page.tsx`, which is a source code file. There are no build artifacts, dependency directories, or temporary files in the change list. According to rule 6, if the changes contain only source files and no build artifacts, dependencies, or temp files, I should output an empty .gitignore.
+# Testing
+.coverage
+coverage/
+htmlcov/
+.pytest_cache/
+.mypy_cache/
 
-Since only `app/page.tsx` was modified (a source file), and there are no other types of files that need to be ignored, the output should be empty.
+# Distribution / packaging
+*.tar.gz
+*.whl
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
 
-```gitignore
+# Jupyter Notebook
+.ipynb_checkpoints
 
-```
+# Coverage
+.coverage*
+
+# TypeScript
+*.tsbuildinfo
+*.tsx.swp
+
+# Next.js
+.next/
+.next/cache/
+
+# ESLint
+.eslintcache
+
+# Prettier
+.prettierrc.js.swp
+
+# General build artifacts
+*.min.js
+*.min.css
+bundle.js
+bundle.css
