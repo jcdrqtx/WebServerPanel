@@ -181,10 +181,44 @@ export default function Page() {
 
   useEffect(() => {
     if (!token) return;
-    const source = new EventSource(`/api/stream?session=${encodeURIComponent(token)}`);
-    source.addEventListener("snapshot", (event) => setState(JSON.parse((event as MessageEvent).data)));
-    source.addEventListener("event", (event) => notify(JSON.parse((event as MessageEvent).data).title || "Новое событие"));
-    return () => source.close();
+    const streamUrl = `/api/stream?session=${encodeURIComponent(token)}`;
+    const source = new EventSource(streamUrl);
+    
+    let reconnectTimeout: NodeJS.Timeout | null = null;
+    
+    source.addEventListener("snapshot", (event) => {
+      try {
+        const data = JSON.parse((event as MessageEvent).data);
+        setState(data);
+      } catch (error) {
+        console.error("Failed to parse snapshot:", error);
+      }
+    });
+    
+    source.addEventListener("event", (event) => {
+      try {
+        notify(JSON.parse((event as MessageEvent).data).title || "Новое событие");
+      } catch (error) {
+        console.error("Failed to parse event:", error);
+      }
+    });
+    
+    source.addEventListener("error", (event) => {
+      console.log("EventSource error, attempting reconnect...");
+      source.close();
+      // Reconnect after 2 seconds if still have token
+      if (token && localStorage.getItem("rustNetSession") === token) {
+        reconnectTimeout = setTimeout(() => {
+          setToken(""); // Trigger re-creation of EventSource
+          setTimeout(() => setToken(token), 100);
+        }, 2000);
+      }
+    });
+    
+    return () => {
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      source.close();
+    };
   }, [token]);
 
   const user = state?.auth?.user;

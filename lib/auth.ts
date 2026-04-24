@@ -66,17 +66,25 @@ export function sessionUserId(token: string | null) {
   const [payload, signature] = token.split(".");
   if (!payload || !signature) return null;
 
-  const expected = crypto.createHmac("sha256", sessionSecret).update(payload).digest("base64url");
-  // Use constant-time comparison that handles different lengths safely
-  const signatureBuffer = Buffer.from(signature);
-  const expectedBuffer = Buffer.from(expected);
-  if (signatureBuffer.length !== expectedBuffer.length) return null;
-  if (!crypto.timingSafeEqual(signatureBuffer, expectedBuffer)) return null;
-
   try {
+    const expected = crypto.createHmac("sha256", sessionSecret).update(payload).digest("base64url");
+    // Use constant-time comparison that handles different lengths safely
+    const signatureBuffer = Buffer.from(signature);
+    const expectedBuffer = Buffer.from(expected);
+    if (signatureBuffer.length !== expectedBuffer.length) {
+      console.log("Session invalid: signature length mismatch");
+      return null;
+    }
+    if (!crypto.timingSafeEqual(signatureBuffer, expectedBuffer)) {
+      console.log("Session invalid: signature mismatch");
+      return null;
+    }
+
     const parsed = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { userId?: string; expiresAt?: number };
-    if (!parsed.userId || !parsed.expiresAt) return null;
-    // Session is valid even if expired - we check expiration separately for debugging
+    if (!parsed.userId || !parsed.expiresAt) {
+      console.log("Session invalid: missing userId or expiresAt");
+      return null;
+    }
     const isExpired = parsed.expiresAt < Date.now();
     if (isExpired) {
       console.log(`Session expired: userId=${parsed.userId}, expiredAt=${new Date(parsed.expiresAt).toISOString()}`);
