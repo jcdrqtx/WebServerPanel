@@ -161,7 +161,21 @@ export default function Page() {
     const saved = localStorage.getItem("rustNetSession");
     if (saved) {
       setToken(saved);
-      fetchState(saved);
+      // Validate session before fetching state
+      fetch("/api/state", {
+        headers: { Authorization: `Bearer ${saved}` }
+      }).then(async (res) => {
+        if (!res.ok) {
+          // Session is invalid, clear it
+          localStorage.removeItem("rustNetSession");
+          setToken("");
+        } else {
+          fetchState(saved);
+        }
+      }).catch(() => {
+        localStorage.removeItem("rustNetSession");
+        setToken("");
+      });
     }
   }, []);
 
@@ -198,7 +212,11 @@ export default function Page() {
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (response.status === 401 && (!session || localStorage.getItem("rustNetSession") === session)) logout();
+      if (response.status === 401 && session === token && localStorage.getItem("rustNetSession") === session) {
+        localStorage.removeItem("rustNetSession");
+        setToken("");
+        setState(null);
+      }
       throw new Error(data.error || `HTTP ${response.status}`);
     }
     return data;

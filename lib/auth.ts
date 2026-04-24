@@ -36,7 +36,7 @@ export function verifyPassword(password: string, encoded: string) {
 export function createSession(user: PanelUser) {
   const payload = Buffer.from(JSON.stringify({
     userId: user.id,
-    expiresAt: Date.now() + 12 * 60 * 60 * 1000,
+    expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 дней вместо 12 часов
     nonce: crypto.randomBytes(12).toString("hex")
   })).toString("base64url");
   const signature = crypto.createHmac("sha256", sessionSecret).update(payload).digest("base64url");
@@ -67,17 +67,24 @@ export function sessionUserId(token: string | null) {
   if (!payload || !signature) return null;
 
   const expected = crypto.createHmac("sha256", sessionSecret).update(payload).digest("base64url");
+  // Use constant-time comparison that handles different lengths safely
   const signatureBuffer = Buffer.from(signature);
   const expectedBuffer = Buffer.from(expected);
-  if (signatureBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)) {
-    return null;
-  }
+  if (signatureBuffer.length !== expectedBuffer.length) return null;
+  if (!crypto.timingSafeEqual(signatureBuffer, expectedBuffer)) return null;
 
   try {
     const parsed = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { userId?: string; expiresAt?: number };
-    if (!parsed.userId || !parsed.expiresAt || parsed.expiresAt < Date.now()) return null;
+    if (!parsed.userId || !parsed.expiresAt) return null;
+    // Session is valid even if expired - we check expiration separately for debugging
+    const isExpired = parsed.expiresAt < Date.now();
+    if (isExpired) {
+      console.log(`Session expired: userId=${parsed.userId}, expiredAt=${new Date(parsed.expiresAt).toISOString()}`);
+      return null;
+    }
     return parsed.userId;
-  } catch {
+  } catch (error) {
+    console.error("Session parse error:", error instanceof Error ? error.message : error);
     return null;
   }
 }
