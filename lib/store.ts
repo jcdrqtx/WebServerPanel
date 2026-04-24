@@ -112,7 +112,8 @@ export function getSessionUser(request: Request) {
   const auth = request.headers.get("authorization") || "";
   const bearer = auth.startsWith("Bearer ") ? auth.slice(7) : "";
   const url = new URL(request.url);
-  const token = bearer || request.headers.get("x-session-token") || url.searchParams.get("session");
+  // Priority: Bearer token > session query param > x-session-token header
+  const token = bearer || url.searchParams.get("session") || request.headers.get("x-session-token");
   const userId = sessionUserId(token);
   if (!userId) return { token: token || null, user: null as PanelUser | null };
   return { token: token || null, user: store.users.find((user) => user.id === userId) || null };
