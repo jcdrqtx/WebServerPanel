@@ -14,7 +14,9 @@ export async function GET(request: Request) {
       const send = (type: string, payload: unknown) => {
         controller.enqueue(encoder.encode(`event: ${type}\ndata: ${JSON.stringify(payload)}\n\n`));
       };
-      const listener = (event: { type: string; payload: unknown }) => send(event.type, event.payload);
+      const listener = (event: { type: string; payload: unknown }) => {
+        send(event.type, event.type === "snapshot" ? snapshot(user) : event.payload);
+      };
       listeners.add(listener);
       send("snapshot", snapshot(user));
       const keepAlive = setInterval(() => send("ping", { now: Date.now() }), 25000);

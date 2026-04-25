@@ -20,6 +20,6 @@ export async function PUT(request: Request) {
   touchPlugin();
 
   const body = await request.json().catch(() => ({}));
-  completeTasks(body.data || {});
+  completeTasks(body.data && typeof body.data === "object" ? body.data : body);
   return json({ ok: true });
 }

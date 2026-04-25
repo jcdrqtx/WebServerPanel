@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
-import { hashPassword, publicUser, roleLabels, rolePermissions, sessionUserId } from "./auth";
+import { hashPassword, publicUser, roleLabels, rolePermissions, sessionCookieName, sessionUserId } from "./auth";
 import type { BanEntry, EventEntry, MetricPoint, MuteEntry, PanelUser, PlayerState, QueueTask, ServerState, Store } from "./types";
 
 const dataDir = path.join(process.cwd(), "data");
@@ -94,7 +94,7 @@ export function persistStore() {
 
 export function ensureBootstrapUser() {
   if (store.users.length > 0) return;
-  const password = process.env.BOOTSTRAP_ADMIN_PASSWORD || "admin1234";
+  const password = process.env.BOOTSTRAP_ADMIN_PASSWORD || "admin123";
   store.users.push({
     id: crypto.randomUUID(),
     username: "admin",
@@ -112,11 +112,25 @@ export function getSessionUser(request: Request) {
   const auth = request.headers.get("authorization") || "";
   const bearer = auth.startsWith("Bearer ") ? auth.slice(7) : "";
   const url = new URL(request.url);
-  // Priority: Bearer token > session query param > x-session-token header
-  const token = bearer || url.searchParams.get("session") || request.headers.get("x-session-token");
-  const userId = sessionUserId(token);
-  if (!userId) return { token: token || null, user: null as PanelUser | null };
-  return { token: token || null, user: store.users.find((user) => user.id === userId) || null };
+  const cookieToken = parseCookie(request.headers.get("cookie") || "")[sessionCookieName] || "";
+  const candidates = [bearer, url.searchParams.get("session") || "", request.headers.get("x-session-token") || "", cookieToken].filter(Boolean);
+  for (const token of candidates) {
+    const userId = sessionUserId(token);
+    if (!userId) continue;
+    return { token, user: store.users.find((user) => user.id === userId) || null };
+  }
+  return { token: candidates[0] || null, user: null as PanelUser | null };
+}
+
+function parseCookie(header: string) {
+  return header.split(";").reduce<Record<string, string>>((acc, part) => {
+    const index = part.indexOf("=");
+    if (index === -1) return acc;
+    const key = part.slice(0, index).trim();
+    const value = part.slice(index + 1).trim();
+    if (key) acc[key] = decodeURIComponent(value);
+    return acc;
+  }, {});
 }
 
 export function json(data: unknown, status = 200) {
@@ -235,7 +249,21 @@ export function createTask(name: string, data: Record<string, unknown>, label = 
 }
 
 export function completeTasks(results: Record<string, unknown>) {
-  for (const [id, result] of Object.entries(results)) {
+  const resultEntries = Object.entries(results);
+  if (resultEntries.length === 0) {
+    const pending = store.tasks.filter((item) => item.status === "pending");
+    if (pending.length === 1 && Date.now() - pending[0].createdAt > 5000) {
+      pending[0].status = "failed";
+      pending[0].result = "Plugin returned an empty queue response";
+      pending[0].completedAt = Date.now();
+      store.counters.tasksCompleted += 1;
+      pushEvent("task-result", `Ошибка: ${pending[0].label}`, { result: pending[0].result });
+      persistStore();
+      broadcast("snapshot", snapshot());
+    }
+    return;
+  }
+  for (const [id, result] of resultEntries) {
     const task = store.tasks.find((item) => item.id === id);
     if (!task) continue;
     task.status = result === null || typeof result === "string" ? "failed" : "completed";

@@ -20,6 +20,8 @@ export const rolePermissions: Record<Role, Permission[]> = {
 };
 
 const sessionSecret = process.env.SESSION_SECRET || "rust-dot-net-dev-secret";
+export const sessionCookieName = "rustNetSession";
+export const sessionMaxAgeSeconds = 12 * 60 * 60;
 
 export function hashPassword(password: string, salt = crypto.randomBytes(16).toString("hex")) {
   const hash = crypto.pbkdf2Sync(password, salt, 120000, 32, "sha256").toString("hex");
@@ -99,4 +101,12 @@ export function sessionUserId(token: string | null) {
 
 export function destroySession(token: string | null) {
   void token;
+}
+
+export function sessionCookie(token: string) {
+  return `${sessionCookieName}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${sessionMaxAgeSeconds}`;
+}
+
+export function expiredSessionCookie() {
+  return `${sessionCookieName}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`;
 }

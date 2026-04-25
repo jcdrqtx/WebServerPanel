@@ -10,7 +10,9 @@ export const dynamic = "force-dynamic";
 const actionPermissions: Record<string, Permission> = {
   kick: "kick_players",
   chat: "send_chat",
+  chatTeam: "send_chat",
   command: "console",
+  playerCommand: "console",
   give: "give_items",
   mute: "mute_players",
   unmute: "mute_players",
@@ -77,9 +79,60 @@ export async function POST(request: Request) {
     }, targetSteamId ? `DM ${playerName(targetSteamId)}` : "Global chat"));
   }
 
+  if (type === "chatTeam") {
+    const steamId = String(data.steamId || "");
+    const player = store.players.find((item) => item.steam_id === steamId);
+    const team = Array.from(new Set([steamId, ...(player?.team || [])].filter(Boolean)));
+    const message = String(data.message || "");
+    if (!steamId || !message.trim()) return json({ error: "steamId and message required" }, 400);
+    if (team.length === 0) return json({ error: "team is empty" }, 400);
+
+    store.chats.push({
+      id: crypto.randomUUID(),
+      steam_id: null,
+      target_steam_id: steamId,
+      is_team: true,
+      text: message,
+      createdAt: Date.now(),
+      meta: {
+        direction: "outgoing",
+        initiator_name: base.user.displayName || base.user.username,
+        mode: "team",
+        recipients: team
+      }
+    } as any);
+    store.counters.chatMessages += 1;
+    pushEvent("chat", `Team chat to ${playerName(steamId)}`, { text: message, recipients: team });
+    persistStore();
+    broadcast("snapshot", snapshot(base.user));
+
+    const tasks = team.map((targetSteamId) => createTask("chat-message", {
+      initiator_name: base.user.displayName || base.user.username,
+      initiator_steam_id: null,
+      target_steam_id: targetSteamId,
+      message,
+      mode: "direct"
+    }, `Team DM ${playerName(targetSteamId)}`));
+    return json({ ok: true, tasks });
+  }
+
   if (type === "command") {
     const commands = Array.isArray(data.commands) ? data.commands.map(String).filter(Boolean) : [String(data.command || "")].filter(Boolean);
     return json(createTask("execute-command", { commands }, "Console command"));
+  }
+
+  if (type === "playerCommand") {
+    const steamId = String(data.steamId || "");
+    const player = store.players.find((item) => item.steam_id === steamId);
+    const template = String(data.command || data.template || "").trim();
+    if (!steamId || !template) return json({ error: "steamId and command required" }, 400);
+    const command = template
+      .replaceAll("{steamId}", steamId)
+      .replaceAll("{name}", player?.steam_name || steamId)
+      .replaceAll("{ip}", player?.ip || "")
+      .replaceAll("{coords}", player?.coords || "")
+      .replaceAll("{position}", player?.position || "");
+    return json(createTask("execute-command", { commands: [command] }, `Player command ${playerName(steamId)}`));
   }
 
   if (type === "give") {
@@ -150,7 +203,9 @@ export async function POST(request: Request) {
       steam_id: ban.steamId,
       name: playerName(steamId),
       reason: ban.reason,
-      broadcast: Boolean(data.broadcast)
+      broadcast: Boolean(data.broadcast),
+      global: Boolean(data.global),
+      ban_ip: Boolean(data.banIp || data.ban_ip)
     }, `Ban ${playerName(steamId)}`));
   }
 
@@ -159,7 +214,9 @@ export async function POST(request: Request) {
     store.bans.forEach((ban) => {
       if (ban.steamId === steamId) ban.active = false;
     });
+    pushEvent("ban", `Unban ${playerName(steamId)}`, { steamId });
     persistStore();
+    broadcast("snapshot", snapshot(base.user));
     return json({ ok: true });
   }
 

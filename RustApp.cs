@@ -1355,7 +1355,7 @@ namespace Oxide.Plugins
             {
                 base.Awake();
 
-                InvokeRepeating(nameof(GetQueueTasks), 0f, 1f);
+                InvokeRepeating(nameof(GetQueueTasks), 0f, 2f);
             }
 
             private void GetQueueTasks()

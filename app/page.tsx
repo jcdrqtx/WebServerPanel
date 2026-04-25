@@ -3,22 +3,36 @@
 import {
   Activity,
   Ban,
+  BarChart3,
   Bed,
   Bell,
   Boxes,
+  Building2,
   CheckCircle2,
+  ChevronDown,
+  ChevronRight,
   Clock,
   Command,
+  Copy,
+  CreditCard,
   Database,
   Eye,
+  ExternalLink,
+  FileText,
+  Heart,
   Gamepad2,
+  Globe2,
   Home,
   KeyRound,
   LayoutDashboard,
   ListChecks,
+  Lock,
   LogOut,
   MapPin,
   MessageCircle,
+  Mic,
+  MoreVertical,
+  Plug,
   Radio,
   Flag,
   Image as ImageIcon,
@@ -30,6 +44,8 @@ import {
   Server,
   Settings,
   Shield,
+  ShieldCheck,
+  SlidersHorizontal,
   Trash2,
   UserCog,
   Users,
@@ -106,25 +122,78 @@ const emptyCollections = {
   contacts: []
 };
 
-type TabId = "home" | "players" | "sleepers" | "chat" | "reports" | "kills" | "alerts" | "art" | "bans" | "checks" | "actions" | "contacts" | "queue" | "events" | "users" | "settings";
+type SteamProfile = {
+  steamId: string;
+  name?: string;
+  profileUrl?: string;
+  avatar?: string;
+  avatarMedium?: string;
+  avatarFull?: string;
+  visibility?: number;
+  profileState?: number;
+  countryCode?: string;
+  createdAt?: number | null;
+  lastLogoffAt?: number | null;
+  bans?: {
+    communityBanned?: boolean;
+    vacBanned?: boolean;
+    numberOfVacBans?: number;
+    daysSinceLastBan?: number;
+    numberOfGameBans?: number;
+    economyBan?: string;
+  } | null;
+};
+
+const cookieSessionToken = "__cookie_session__";
+
+type TabId =
+  | "home"
+  | "players"
+  | "chat"
+  | "reports"
+  | "checks"
+  | "art"
+  | "alerts"
+  | "sleepers"
+  | "mutes"
+  | "bans"
+  | "statistics"
+  | "servers"
+  | "audit"
+  | "integrations"
+  | "settings"
+  | "project"
+  | "users"
+  | "billing"
+  | "kills"
+  | "actions"
+  | "contacts"
+  | "queue"
+  | "events";
 
 const tabs: Array<{ id: TabId; label: string; icon: any; group?: string; permission?: Permission }> = [
-  { id: "home", label: "Главная", icon: Home },
-  { id: "players", label: "Игроки", icon: Users, group: "MODERATION" },
-  { id: "sleepers", label: "Спальники", icon: Bed, group: "MODERATION" },
-  { id: "chat", label: "Чат", icon: MessageCircle, group: "MODERATION" },
-  { id: "reports", label: "Репорты", icon: Flag, group: "MODERATION" },
-  { id: "kills", label: "Киллы", icon: Skull, group: "MODERATION" },
-  { id: "alerts", label: "Alerts", icon: AlertTriangle, group: "MODERATION" },
-  { id: "art", label: "Рисунки", icon: ImageIcon, group: "MODERATION" },
-  { id: "bans", label: "Баны", icon: Ban, group: "MODERATION" },
-  { id: "checks", label: "Проверки", icon: Search, group: "MODERATION" },
-  { id: "actions", label: "Команды", icon: Zap, group: "MODERATION" },
-  { id: "contacts", label: "Контакты", icon: Bell, group: "CONTROL" },
-  { id: "queue", label: "Очередь", icon: Database, group: "CONTROL" },
-  { id: "events", label: "История", icon: Activity, group: "CONTROL" },
-  { id: "users", label: "Пользователи", icon: UserCog, group: "CONTROL", permission: "manage_users" },
-  { id: "settings", label: "Интеграция", icon: Settings, group: "PROJECT" }
+  { id: "players", label: "Игроки", icon: Users, group: "Модерация" },
+  { id: "chat", label: "Чат", icon: MessageCircle, group: "Модерация" },
+  { id: "reports", label: "Репорты", icon: Flag, group: "Модерация" },
+  { id: "checks", label: "Проверки", icon: ShieldCheck, group: "Модерация" },
+  { id: "art", label: "Рисунки", icon: ImageIcon, group: "Модерация" },
+  { id: "alerts", label: "Оповещения", icon: Bell, group: "Модерация" },
+  { id: "sleepers", label: "Спальники", icon: Bed, group: "Модерация" },
+  { id: "mutes", label: "Муты", icon: Mic, group: "Модерация" },
+  { id: "bans", label: "Блокировки", icon: Lock, group: "Модерация" },
+  { id: "statistics", label: "Статистика", icon: BarChart3, group: "Управление" },
+  { id: "servers", label: "Серверы", icon: Server, group: "Управление" },
+  { id: "audit", label: "Журнал аудита", icon: FileText, group: "Управление" },
+  { id: "integrations", label: "Интеграции", icon: Plug, group: "Управление" },
+  { id: "settings", label: "Настройки", icon: Settings, group: "Управление" },
+  { id: "project", label: "Общее", icon: Building2, group: "Проект" },
+  { id: "users", label: "Сотрудники", icon: UserCog, group: "Проект", permission: "manage_users" },
+  { id: "billing", label: "Биллинг", icon: CreditCard, group: "Проект" },
+  { id: "kills", label: "Киллы", icon: Skull, group: "Тех." },
+  { id: "actions", label: "Команды", icon: Zap, group: "Тех." },
+  { id: "contacts", label: "Контакты", icon: Bell, group: "Тех." },
+  { id: "queue", label: "Очередь", icon: Database, group: "Тех." },
+  { id: "events", label: "События", icon: Activity, group: "Тех." }
 ];
 
 const pageMeta: Record<TabId, { title: string; subtitle: string; icon: any }> = {
@@ -134,29 +203,38 @@ const pageMeta: Record<TabId, { title: string; subtitle: string; icon: any }> = 
   chat: { title: "Чат", subtitle: "Мониторинг и управление чатом сервера", icon: MessageCircle },
   reports: { title: "Репорты", subtitle: "Жалобы игроков и F7 reports", icon: Flag },
   kills: { title: "Киллы", subtitle: "Убийства и combat log из плагина", icon: Skull },
-  alerts: { title: "Alerts", subtitle: "Автоматические уведомления и подозрительные события", icon: AlertTriangle },
+  alerts: { title: "Оповещения", subtitle: "Автоматические уведомления и подозрительные события", icon: Bell },
   art: { title: "Рисунки игроков", subtitle: "Signage, painted items и firework designs", icon: ImageIcon },
-  bans: { title: "Баны", subtitle: "Управление банами и мутами игроков", icon: Ban },
-  checks: { title: "Проверки", subtitle: "Вызовы игроков на проверку", icon: Search },
+  bans: { title: "Блокировки", subtitle: "Баны игроков и связанные ограничения", icon: Lock },
+  mutes: { title: "Муты", subtitle: "Голосовые и текстовые ограничения игроков", icon: Mic },
+  checks: { title: "Проверки", subtitle: "Вызовы игроков на проверку", icon: ShieldCheck },
   actions: { title: "Команды", subtitle: "Быстрые действия и консоль сервера", icon: Command },
   contacts: { title: "Контакты", subtitle: "Сообщения игроков через команду связи", icon: Bell },
   queue: { title: "Очередь", subtitle: "Команды, отправленные RustApp worker", icon: Database },
   events: { title: "История", subtitle: "Лог действий панели и плагина", icon: Activity },
-  users: { title: "Пользователи", subtitle: "Авторизация, роли и уровни доступа", icon: UserCog },
-  settings: { title: "Интеграция", subtitle: "Связь RUST .NET с плагином RustApp", icon: Settings }
+  statistics: { title: "Статистика", subtitle: "Мониторинг ключевых показателей сервера", icon: BarChart3 },
+  servers: { title: "Серверы", subtitle: "Состояние подключенного Rust сервера", icon: Server },
+  audit: { title: "Журнал аудита", subtitle: "Действия сотрудников, плагина и очереди", icon: FileText },
+  integrations: { title: "Интеграции", subtitle: "Вебхуки, Discord и внешние уведомления", icon: Plug },
+  users: { title: "Сотрудники", subtitle: "Авторизация, роли и уровни доступа", icon: UserCog },
+  settings: { title: "Настройки", subtitle: "Связь RUST .NET с плагином RustApp", icon: Settings },
+  project: { title: "Общее", subtitle: "Основные параметры проекта и панели", icon: Building2 },
+  billing: { title: "Биллинг", subtitle: "Тарифы, доступы и ограничения проекта", icon: CreditCard }
 };
 
 export default function Page() {
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [token, setToken] = useState("");
   const [state, setState] = useState<PanelState | null>(null);
-  const [tab, setTab] = useState<TabId>("home");
+  const [tab, setTab] = useState<TabId>("players");
   const [toast, setToast] = useState("");
   const [playerSearch, setPlayerSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [eventFilter, setEventFilter] = useState("");
   const [usersData, setUsersData] = useState<any>(null);
   const [isSessionValid, setIsSessionValid] = useState<boolean | null>(null);
+  const [steamProfiles, setSteamProfiles] = useState<Record<string, SteamProfile>>({});
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
   // Проверка сессии только один раз при монтировании
   useEffect(() => {
@@ -165,6 +243,7 @@ export default function Page() {
       setToken(saved);
       // Валидируем сессию перед загрузкой состояния
       fetch("/api/state", {
+        credentials: "include",
         headers: { Authorization: `Bearer ${saved}` }
       }).then(async (res) => {
         if (!res.ok) {
@@ -174,8 +253,9 @@ export default function Page() {
           setToken("");
           setIsSessionValid(false);
         } else {
+          const data = await res.json();
           setIsSessionValid(true);
-          fetchState(saved);
+          setState(data);
         }
       }).catch((err) => {
         console.error("Session validation error:", err);
@@ -184,7 +264,16 @@ export default function Page() {
         fetchState(saved);
       });
     } else {
-      setIsSessionValid(false);
+      fetch("/api/state", { credentials: "include" }).then(async (res) => {
+        if (!res.ok) {
+          setIsSessionValid(false);
+          return;
+        }
+        const data = await res.json();
+        setToken(cookieSessionToken);
+        setState(data);
+        setIsSessionValid(true);
+      }).catch(() => setIsSessionValid(false));
     }
   }, []);
 
@@ -203,12 +292,16 @@ export default function Page() {
       if (isClosed) return;
       
       try {
-        source = new EventSource(`/api/stream?session=${encodeURIComponent(token)}`);
+        const streamUrl = token === cookieSessionToken ? "/api/stream" : `/api/stream?session=${encodeURIComponent(token)}`;
+        source = new EventSource(streamUrl);
         
         source.addEventListener("snapshot", (event) => {
           try {
-            const data = JSON.parse((event as MessageEvent).data);
-            setState(data);
+            const data = JSON.parse((event as MessageEvent).data) as PanelState;
+            setState((previous) => ({
+              ...data,
+              auth: data.auth || previous?.auth || null
+            }));
             errorCount = 0; // Сброс счетчика ошибок при успешном получении snapshot
             setIsSessionValid(true);
           } catch (error) {
@@ -252,9 +345,10 @@ export default function Page() {
           } else {
             // После максимального количества попыток проверяем сессию явно
             console.log("Max reconnection attempts reached, validating session...");
-            fetch("/api/state", {
-              headers: { Authorization: `Bearer ${token}` }
-            }).then((res) => {
+        fetch("/api/state", {
+          credentials: "include",
+          headers: { Authorization: `Bearer ${token}` }
+        }).then((res) => {
               if (!res.ok) {
                 console.log("Session confirmed invalid, logging out");
                 localStorage.removeItem("rustNetSession");
@@ -314,12 +408,35 @@ export default function Page() {
     });
   }, [state?.players, playerSearch, statusFilter]);
 
+  const playerIdsKey = useMemo(() => {
+    return (state?.players || []).map((player) => player.steam_id).filter(Boolean).slice(0, 100).join(",");
+  }, [state?.players]);
+
+  useEffect(() => {
+    if (!playerIdsKey || !token || isSessionValid !== true) return;
+    let cancelled = false;
+    fetch(`/api/steam/players?ids=${encodeURIComponent(playerIdsKey)}`, {
+      credentials: "include",
+      headers: token && token !== cookieSessionToken ? { Authorization: `Bearer ${token}` } : {}
+    }).then(async (response) => {
+      if (!response.ok) return;
+      const data = await response.json();
+      if (!cancelled && data.profiles) {
+        setSteamProfiles((previous) => ({ ...previous, ...data.profiles }));
+      }
+    }).catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [playerIdsKey, token, isSessionValid]);
+
   async function api(path: string, init: RequestInit = {}, session = token) {
     const response = await fetch(path, {
       ...init,
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session}`,
+        ...(session && session !== cookieSessionToken ? { Authorization: `Bearer ${session}` } : {}),
         ...(init.headers || {})
       }
     });
@@ -330,7 +447,8 @@ export default function Page() {
         console.log("API returned 401, validating session...");
         try {
           const validationRes = await fetch("/api/state", {
-            headers: { Authorization: `Bearer ${session}` }
+            credentials: "include",
+            headers: session && session !== cookieSessionToken ? { Authorization: `Bearer ${session}` } : {}
           });
           if (!validationRes.ok) {
             console.log("Session confirmed invalid by /api/state, logging out");
@@ -373,6 +491,7 @@ export default function Page() {
     try {
       const response = await fetch(authMode === "login" ? "/api/auth/login" : "/api/auth/register", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
@@ -384,6 +503,7 @@ export default function Page() {
       }
       localStorage.setItem("rustNetSession", data.token);
       setToken(data.token);
+      setIsSessionValid(true); // Устанавливаем валидность сессии сразу после успешной авторизации
       notify("Вы успешно авторизовались");
       fetchState(data.token);
     } catch (error) {
@@ -421,9 +541,15 @@ export default function Page() {
   }
 
   function logout() {
+    fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+      headers: token && token !== cookieSessionToken ? { Authorization: `Bearer ${token}` } : {}
+    }).catch(() => undefined);
     localStorage.removeItem("rustNetSession");
     setToken("");
     setState(null);
+    setIsSessionValid(false);
   }
 
   function notify(message: string) {
@@ -448,8 +574,20 @@ export default function Page() {
     );
   }
 
-  if (!token || !state?.auth?.user || isSessionValid === false) {
+  if (!token || isSessionValid === false) {
     return <AuthScreen mode={authMode} setMode={setAuthMode} submitAuth={submitAuth} toast={toast} />;
+  }
+
+  if (!state?.auth?.user) {
+    return (
+      <div className="auth-screen" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#0f0f13' }}>
+        <div style={{ textAlign: 'center', color: '#fff' }}>
+          <div style={{ fontSize: '24px', marginBottom: '16px' }}>RUST .NET</div>
+          <div style={{ opacity: 0.7 }}>Загрузка панели...</div>
+          <button className="text-button" style={{ marginTop: 16 }} onClick={logout}>Сменить аккаунт</button>
+        </div>
+      </div>
+    );
   }
 
   const currentUser = state.auth.user;
@@ -468,20 +606,22 @@ export default function Page() {
         </div>
 
         <nav className="nav">
-          {tabs.map((item, index) => {
-            if (item.permission && !can(item.permission)) return null;
-            const Icon = item.icon;
-            const previous = tabs[index - 1];
-            const showGroup = item.group && item.group !== previous?.group;
-            return (
-              <div key={item.id}>
-                {showGroup ? <p>{item.group}</p> : null}
-                <button className={`nav-item ${tab === item.id ? "active" : ""}`} onClick={() => setTab(item.id)}>
-                  <Icon size={16} /> {item.label}
-                </button>
-              </div>
-            );
-          })}
+          {Object.entries(groupTabs(tabs.filter((item) => !item.permission || can(item.permission)))).map(([group, items]) => (
+            <section className="nav-group" key={group}>
+              <button className="nav-group-title" onClick={() => setCollapsedGroups((previous) => ({ ...previous, [group]: !previous[group] }))}>
+                <span>{group}</span>
+                {collapsedGroups[group] ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
+              </button>
+              {!collapsedGroups[group] ? items.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button key={item.id} className={`nav-item ${tab === item.id ? "active" : ""}`} onClick={() => setTab(item.id)}>
+                    <Icon size={16} /> {item.label}
+                  </button>
+                );
+              }) : null}
+            </section>
+          ))}
         </nav>
 
         <div className="profile">
@@ -504,28 +644,35 @@ export default function Page() {
           </div>
           <div className="top-actions">
             <span className={`status-pill ${state.meta.pluginOnline ? "online" : ""}`}>
-              <Radio size={15} /> plugin {state.meta.pluginOnline ? "online" : "offline"}
+              <Radio size={15} /> плагин {state.meta.pluginOnline ? "онлайн" : "офлайн"}
             </span>
             <button className="icon-button" onClick={() => fetchState()} title="Обновить"><RefreshCcw size={18} /></button>
           </div>
         </header>
 
-        {tab === "home" ? <HomeView state={state} onlinePlayers={onlinePlayers} queuePlayers={queuePlayers} avgPing={avgPing} /> : null}
-        {tab === "players" ? <PlayersView players={filteredPlayers} allPlayers={state.players} search={playerSearch} setSearch={setPlayerSearch} status={statusFilter} setStatus={setStatusFilter} runAction={runAction} /> : null}
+        {tab === "home" ? <HomeView state={state} onlinePlayers={onlinePlayers} queuePlayers={queuePlayers} avgPing={avgPing} steamProfiles={steamProfiles} /> : null}
+        {tab === "players" ? <PlayersView state={state} players={filteredPlayers} allPlayers={state.players} search={playerSearch} setSearch={setPlayerSearch} status={statusFilter} setStatus={setStatusFilter} runAction={runAction} steamProfiles={steamProfiles} /> : null}
         {tab === "sleepers" ? <SleepersView state={state} /> : null}
         {tab === "chat" ? <ChatView state={state} canSend={can("send_chat")} runAction={runAction} /> : null}
         {tab === "reports" ? <ReportsView state={state} /> : null}
         {tab === "kills" ? <KillsView state={state} /> : null}
         {tab === "alerts" ? <AlertsView state={state} /> : null}
-        {tab === "art" ? <ArtView state={state} /> : null}
-        {tab === "bans" ? <BansView state={state} runAction={runAction} /> : null}
-        {tab === "checks" ? <ChecksView players={state.players} runAction={runAction} /> : null}
+        {tab === "art" ? <ArtView state={state} runAction={runAction} /> : null}
+        {tab === "mutes" ? <MutesView state={state} runAction={runAction} /> : null}
+        {tab === "bans" ? <BlocksView state={state} runAction={runAction} /> : null}
+        {tab === "checks" ? <ChecksView state={state} players={state.players} runAction={runAction} /> : null}
         {tab === "actions" ? <ActionsView players={state.players} can={can} runAction={runAction} /> : null}
         {tab === "contacts" ? <ContactsView state={state} runAction={runAction} /> : null}
         {tab === "queue" ? <QueueView state={state} runAction={runAction} /> : null}
         {tab === "events" ? <EventsView state={state} filter={eventFilter} setFilter={setEventFilter} /> : null}
+        {tab === "statistics" ? <StatisticsView state={state} /> : null}
+        {tab === "servers" ? <ServersView state={state} /> : null}
+        {tab === "audit" ? <AuditView state={state} filter={eventFilter} setFilter={setEventFilter} /> : null}
+        {tab === "integrations" ? <IntegrationsView state={state} /> : null}
         {tab === "users" ? <UsersView data={usersData} updateUser={updateUser} /> : null}
         {tab === "settings" ? <SettingsView state={state} notify={notify} /> : null}
+        {tab === "project" ? <ProjectView state={state} /> : null}
+        {tab === "billing" ? <BillingView /> : null}
       </main>
 
       {toast ? <div className="toast">{toast}</div> : null}
@@ -549,7 +696,7 @@ function AuthScreen({ mode, setMode, submitAuth, toast }: { mode: "login" | "reg
         </div>
       </section>
 
-      <form className="auth-card" onSubmit={submitAuth}>
+      <form className="auth-card" method="post" action={mode === "login" ? "/api/auth/login" : "/api/auth/register"} onSubmit={submitAuth}>
         <div className="card-head">
           <div>
             <h2>{mode === "login" ? "Вход в панель" : "Регистрация"}</h2>
@@ -569,7 +716,7 @@ function AuthScreen({ mode, setMode, submitAuth, toast }: { mode: "login" | "reg
   );
 }
 
-function HomeView({ state, onlinePlayers, queuePlayers, avgPing }: { state: PanelState; onlinePlayers: Player[]; queuePlayers: Player[]; avgPing: number }) {
+function HomeView({ state, onlinePlayers, queuePlayers, avgPing, steamProfiles }: { state: PanelState; onlinePlayers: Player[]; queuePlayers: Player[]; avgPing: number; steamProfiles: Record<string, SteamProfile> }) {
   const activePunish = state.bans.length + state.mutes.length;
   const server = state.server || {};
   const capacity = Math.max(1, Number(server.slots || onlinePlayers.length || 1));
@@ -580,13 +727,13 @@ function HomeView({ state, onlinePlayers, queuePlayers, avgPing }: { state: Pane
       <div className="metric-grid">
         <Metric icon={Users} color="purple" label="Онлайн игроков" value={String(server.online ?? onlinePlayers.length)} sub={`${server.slots ?? 0} слотов`} />
         <Metric icon={Flag} color="orange" label="Репорты" value={String((state.reports || []).length)} sub="Жалобы игроков" />
-        <Metric icon={Server} color="blue" label="Задачи" value={String(state.tasks.filter((task) => task.status === "pending").length)} sub="В очереди" />
-        <Metric icon={Radio} color="green" label="Подключаются" value={String(queuePlayers.length)} sub="Queue / joining" />
+        <Metric icon={Server} color="blue" label="Задачи" value={String(state.tasks.filter((task) => task.status === "pending").length)} sub="В очереди плагина" />
+        <Metric icon={Radio} color="green" label="Подключаются" value={String(queuePlayers.length)} sub="Очередь / вход" />
         <Metric icon={Ban} color="red" label="Ограничения" value={String(activePunish)} sub={`${avgPing}ms avg ping`} />
       </div>
       <div className="metric-grid four">
-        <Metric icon={Skull} color="red" label="Киллы" value={String(state.kills.length)} sub="Combat stream" />
-        <Metric icon={AlertTriangle} color="orange" label="Alerts" value={String(state.alerts.length)} sub="Подозрительные события" />
+        <Metric icon={Skull} color="red" label="Киллы" value={String(state.kills.length)} sub="Боевой журнал" />
+        <Metric icon={AlertTriangle} color="orange" label="Оповещения" value={String(state.alerts.length)} sub="Подозрительные события" />
         <Metric icon={Bed} color="purple" label="Спальники" value={String(state.sleepingBags.length)} sub="Sleeping bags" />
         <Metric icon={ImageIcon} color="blue" label="Рисунки" value={String(state.signages.length)} sub="Signage gallery" />
       </div>
@@ -594,14 +741,14 @@ function HomeView({ state, onlinePlayers, queuePlayers, avgPing }: { state: Pane
         <Panel icon={Server} title="Сервер" subtitle="Информация из PluginStateUpdatePayload">
           <ServerHero server={server} players={Number(server.online ?? onlinePlayers.length)} fill={fill} />
         </Panel>
-        <Panel icon={Activity} title="Состояние bridge" subtitle="Пульс плагина и API worker">
+        <Panel icon={Activity} title="Состояние моста" subtitle="Пульс плагина и обработчика API">
           <div className="info-grid">
-            <Info label="Plugin" value={state.meta.pluginOnline ? "online" : "offline"} tone={state.meta.pluginOnline ? "good" : "bad"} />
+            <Info label="Плагин" value={state.meta.pluginOnline ? "онлайн" : "офлайн"} tone={state.meta.pluginOnline ? "good" : "bad"} />
             <Info label="Последний сигнал" value={state.meta.lastPluginSeenAt ? formatDate(state.meta.lastPluginSeenAt) : "-"} />
-            <Info label="State updates" value={String(state.counters.stateUpdates || 0)} />
-            <Info label="Tasks done" value={`${state.counters.tasksCompleted || 0}/${state.counters.tasksCreated || 0}`} />
+            <Info label="Обновлений state" value={String(state.counters.stateUpdates || 0)} />
+            <Info label="Задач выполнено" value={`${state.counters.tasksCompleted || 0}/${state.counters.tasksCreated || 0}`} />
             <Info label="Protocol" value={String(server.protocol || "-")} />
-            <Info label="Performance" value={server.performance ? `${Number(server.performance).toFixed(3)} ms` : "-"} />
+            <Info label="Производительность" value={server.performance ? `${Number(server.performance).toFixed(3)} ms` : "-"} />
           </div>
         </Panel>
       </div>
@@ -610,7 +757,7 @@ function HomeView({ state, onlinePlayers, queuePlayers, avgPing }: { state: Pane
           <div className="roster-strip">
             {state.players.length === 0 ? <div className="empty">Плагин пока не прислал игроков</div> : state.players.slice(0, 8).map((player) => (
               <article className="mini-player" key={player.steam_id}>
-                <span className="avatar">{initials(player.steam_name || player.steam_id)}</span>
+                <Avatar player={player} profile={steamProfiles[player.steam_id]} />
                 <div>
                   <strong>{player.steam_name || player.steam_id}</strong>
                   <small>{player.coords || player.position || "-"} · {player.ping ?? 0}ms</small>
@@ -636,127 +783,152 @@ function HomeView({ state, onlinePlayers, queuePlayers, avgPing }: { state: Pane
           <SparkChart title="Онлайн" data={state.metricsHistory} field="online" color="#6d5dfc" suffix="" />
           <SparkChart title="Очередь" data={state.metricsHistory} field="queued" color="#20c86f" suffix="" />
           <SparkChart title="Средний ping" data={state.metricsHistory} field="avgPing" color="#f59e0b" suffix="ms" />
-          <SparkChart title="Pending tasks" data={state.metricsHistory} field="pendingTasks" color="#3b82f6" suffix="" />
+          <SparkChart title="Задачи в ожидании" data={state.metricsHistory} field="pendingTasks" color="#3b82f6" suffix="" />
         </div>
       </Panel>
     </>
   );
 }
 
-function PlayersView({ players, allPlayers, search, setSearch, status, setStatus, runAction }: any) {
+function PlayersView({ state, players, allPlayers, search, setSearch, status, setStatus, runAction, steamProfiles }: any) {
+  const [selected, setSelected] = useState<Player | null>(null);
+  const [onlyOnline, setOnlyOnline] = useState(false);
+  const [onlyVpn, setOnlyVpn] = useState(false);
+  const [onlyFlagged, setOnlyFlagged] = useState(false);
+  const [showConnectionType, setShowConnectionType] = useState(true);
+  const [showFiltersPanel, setShowFiltersPanel] = useState(true);
+  const [highlightVpn, setHighlightVpn] = useState(true);
   const active = allPlayers.filter((p: Player) => p.status === "active");
-  const raiding = active.filter((p: Player) => p.is_raiding);
-  const noLicense = allPlayers.filter((p: Player) => p.no_license);
+  const visiblePlayers = players.filter((player: Player) => {
+    if (onlyOnline && player.status !== "active") return false;
+    if (onlyVpn && !player.no_license && !player.meta?.tags?.vpn && !player.meta?.fields?.vpn) return false;
+    if (onlyFlagged && !player.can_build && !player.is_raiding && !player.no_license && player.is_alive !== false) return false;
+    return true;
+  });
   return (
-    <>
-      <div className="metric-grid three">
-        <Metric icon={Users} color="purple" label="Всего игроков" value={String(allPlayers.length)} sub="В текущем state" />
-        <Metric icon={CheckCircle2} color="green" label="Онлайн" value={String(active.length)} sub="Сейчас в игре" />
-        <Metric icon={Eye} color="gray" label="Очередь" value={String(allPlayers.filter((p: Player) => p.status !== "active").length)} sub="Не в игре" />
-      </div>
-      <div className="metric-grid two">
-        <Metric icon={AlertTriangle} color="orange" label="Raid block" value={String(raiding.length)} sub="Флаг is_raiding от плагина" />
-        <Metric icon={KeyRound} color="red" label="No license" value={String(noLicense.length)} sub="Проверка Steam license" />
-      </div>
-      <Panel icon={Search} title="Поиск и фильтры" subtitle="Настройка отображения игроков">
-        <div className="filters">
-          <label>Поиск<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Поиск по имени, SteamID, IP" /></label>
-          <label>Статус<select value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Все</option><option value="active">Онлайн</option><option value="joining">Подключается</option><option value="queued">Очередь</option></select></label>
+    <div className={`dense-shell ${showFiltersPanel ? "" : "no-side-panel"}`}>
+      <section className="dense-main">
+        <div className="dense-toolbar">
+          <div className="toolbar-search"><Search size={17} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Поиск..." /></div>
+          <button className="icon-button" title="Фильтры" onClick={() => setShowFiltersPanel(!showFiltersPanel)}><SlidersHorizontal size={18} /></button>
         </div>
-      </Panel>
-      <Panel icon={Gamepad2} title="Карточки игроков" subtitle="Полная видимость состояния из плагина">
-        <div className="player-grid">
-          {players.length === 0 ? <div className="empty">Нет игроков по текущему фильтру</div> : players.map((player: Player) => (
-            <article className="player-card" key={`card-${player.steam_id}`}>
-              <div className="player-card-head">
-                <span className="avatar">{initials(player.steam_name || player.steam_id)}</span>
-                <div>
-                  <strong>{player.steam_name || "unknown"}</strong>
-                  <small>{player.steam_id}</small>
-                </div>
-                <Status status={player.status} />
-              </div>
-              <div className="info-grid dense">
-                <Info label="IP" value={player.ip || "-"} />
-                <Info label="Ping" value={`${player.ping ?? 0}ms`} />
-                <Info label="Online" value={formatDuration((player.seconds_connected || 0) * 1000)} />
-                <Info label="Coords" value={player.coords || player.position || "-"} />
-                <Info label="Team" value={String(player.team?.length || 0)} />
-                <Info label="Lang" value={player.language || "-"} />
-              </div>
-              <div className="flag-row"><Flags player={player} />{metaBadges(player)}</div>
-              <div className="row-actions">
-                <button onClick={() => runAction("chat", { targetSteamId: player.steam_id, message: "Сообщение от администрации" })}>DM</button>
-                <button onClick={() => runAction("notice", { steamId: player.steam_id, value: true })}>Check</button>
-                <button onClick={() => runAction("kick", { steamId: player.steam_id, reason: "Kicked by admin" })}>Kick</button>
-              </div>
-            </article>
-          ))}
+        <div className="dense-stats">
+          <MiniStat label="Всего" value={allPlayers.length} />
+          <MiniStat label="Онлайн" value={active.length} />
+          <MiniStat label="Очередь" value={allPlayers.filter((p: Player) => p.status !== "active").length} />
+          <MiniStat label="Пинг" value={`${avgPingFor(allPlayers)}ms`} />
         </div>
-      </Panel>
-      <Panel icon={ListChecks} title="Список игроков" subtitle={`Показано: ${players.length}`}>
-        <div className="table-wrap">
+        <div className="table-wrap dense-table">
           <table>
-            <thead><tr><th>Игрок</th><th>SteamID</th><th>Статус</th><th>IP адрес</th><th>Позиция</th><th>Команда</th><th>Meta</th><th>Флаги</th><th>Действия</th></tr></thead>
+            <thead><tr><th>Игрок</th><th>SteamID</th><th>IP адрес</th><th>Страна</th><th>Позиция</th><th>Провайдер</th><th>Сервер</th><th /></tr></thead>
             <tbody>
-              {players.map((player: Player) => (
-                <tr key={player.steam_id}>
-                  <td><div className="player-cell"><span className="avatar">{initials(player.steam_name || player.steam_id)}</span><div><strong>{player.steam_name || "unknown"}</strong><small>{player.language || "client"}</small></div></div></td>
-                  <td>{player.steam_id}</td>
-                  <td><Status status={player.status} /></td>
-                  <td>{player.ip || "-"}<small>{player.ping || 0}ms · {formatDuration((player.seconds_connected || 0) * 1000)}</small></td>
-                  <td>{player.coords || "-"}<small>{player.position || "-"}</small></td>
-                  <td>{player.team?.length ? player.team.join(", ") : "-"}</td>
-                  <td>{metaBadges(player)}</td>
-                  <td><Flags player={player} /></td>
-                  <td><div className="row-actions"><button onClick={() => runAction("chat", { targetSteamId: player.steam_id, message: "Сообщение от администрации" })}>DM</button><button onClick={() => runAction("kick", { steamId: player.steam_id, reason: "Kicked by admin" })}>Kick</button><button onClick={() => runAction("give", { steamId: player.steam_id, shortname: "rifle.ak", amount: 1 })}>Give</button></div></td>
+              {visiblePlayers.length === 0 ? <tr><td colSpan={8}>Нет игроков по текущему фильтру</td></tr> : visiblePlayers.map((player: Player) => (
+                <tr key={player.steam_id} onClick={() => setSelected(player)}>
+                  <td><div className="player-cell"><Avatar player={player} profile={steamProfiles[player.steam_id]} /><div><strong>{steamProfiles[player.steam_id]?.name || player.steam_name || "unknown"}</strong><small>{player.status === "active" ? `онлайн ${formatDuration((player.seconds_connected || 0) * 1000)}` : player.status || "offline"}</small></div></div></td>
+                  <td>{player.steam_id}<small>{player.language || "client"}</small></td>
+                  <td className={highlightVpn && player.no_license ? "warn-text" : ""}>{player.ip || "-"} <ExternalLink size={13} /></td>
+                  <td><Globe2 size={14} /> {countryLabel(steamProfiles[player.steam_id]?.countryCode || player.language)}</td>
+                  <td>{player.coords || player.position || "-"}</td>
+                  <td>{showConnectionType ? player.meta?.fields?.provider || player.meta?.tags?.provider || `${player.ping ?? 0}ms` : "-"}</td>
+                  <td>{state.server?.name || state.server?.hostname || "Rust server"}</td>
+                  <td><MoreVertical size={16} /></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </Panel>
-    </>
+      </section>
+      {showFiltersPanel ? <aside className="settings-panel">
+        <div className="settings-head">
+          <div className="toolbar-search"><Search size={15} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Поиск" /></div>
+          <button className="icon-button" title="Скрыть фильтры" onClick={() => setShowFiltersPanel(false)}><SlidersHorizontal size={16} /></button>
+        </div>
+        <h3>Фильтры</h3>
+        <ToggleRow label="Только онлайн игроки" checked={onlyOnline} onChange={setOnlyOnline} />
+        <ToggleRow label="Только игроков с VPN" checked={onlyVpn} onChange={setOnlyVpn} />
+        <ToggleRow label="Только с игровыми флагами" checked={onlyFlagged} onChange={setOnlyFlagged} />
+        <label className="compact-label">Только с сервера<select value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Все</option><option value="active">Онлайн</option><option value="joining">Подключается</option><option value="queued">Очередь</option></select></label>
+        <div className="panel-divider" />
+        <h3>Внешний вид</h3>
+        <ToggleRow label="Показывать тип подключения" checked={showConnectionType} onChange={setShowConnectionType} />
+        <ToggleRow label="Выделять IP с VPN" checked={highlightVpn} onChange={setHighlightVpn} />
+      </aside> : null}
+      {selected ? <PlayerDrawer player={selected} state={state} runAction={runAction} onClose={() => setSelected(null)} steamProfiles={steamProfiles} /> : null}
+    </div>
   );
 }
 
 function ChatView({ state, canSend, runAction }: { state: PanelState; canSend: boolean; runAction: any }) {
   const [message, setMessage] = useState("");
   const [targetSteamId, setTargetSteamId] = useState("");
+  const [sendMode, setSendMode] = useState<"global" | "direct" | "team">("global");
   const [query, setQuery] = useState("");
+  const [showGlobal, setShowGlobal] = useState(true);
+  const [showModerators, setShowModerators] = useState(true);
+  const [showPrivate, setShowPrivate] = useState(true);
+  const [showTeam, setShowTeam] = useState(true);
+  const [showTime, setShowTime] = useState(true);
+  const [highlightBadWords, setHighlightBadWords] = useState(true);
+  const [highlightCustomWords, setHighlightCustomWords] = useState(false);
+  const [playSound, setPlaySound] = useState("Нет");
+  const [showAvatars, setShowAvatars] = useState(false);
+  const [chatPosition, setChatPosition] = useState("Центр");
   const messages = state.chats.filter((chat) => {
     const text = [chat.text, chat.steam_id, chat.target_steam_id, nameBySteam(state.players, chat.steam_id), nameBySteam(state.players, chat.target_steam_id)].filter(Boolean).join(" ").toLowerCase();
-    return !query || text.includes(query.toLowerCase());
+    if (query && !text.includes(query.toLowerCase())) return false;
+    if (chat.target_steam_id && !showPrivate) return false;
+    if (chat.is_team && !showTeam) return false;
+    if (!chat.target_steam_id && !chat.is_team && chat.meta?.direction !== "outgoing" && !showGlobal) return false;
+    if (chat.meta?.direction === "outgoing" && !showModerators) return false;
+    return true;
   });
   return (
-    <div className="split-layout">
-      <Panel icon={MessageCircle} title="Чат" subtitle="Сообщения игроков в реальном времени">
-        <div className="filters">
-          <label>Поиск<input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Игрок, SteamID или текст" /></label>
-          <label>Получатель<select disabled={!canSend} value={targetSteamId} onChange={(event) => setTargetSteamId(event.target.value)}><option value="">Все игроки</option>{state.players.filter((player) => player.status === "active").map((player) => <option key={player.steam_id} value={player.steam_id}>{player.steam_name || player.steam_id}</option>)}</select></label>
+    <div className="moderation-layout">
+      <section className={`chat-console ${chatPosition === "Слева" ? "left-chat" : ""}`}>
+        <div className="chat-toolbar">
+          <button className={sendMode === "global" ? "active" : ""} onClick={() => setSendMode("global")}><MessageCircle size={16} /></button>
+          <button className={sendMode === "team" ? "active" : ""} onClick={() => setSendMode("team")}><Users size={16} /></button>
+          <button className={sendMode === "direct" ? "active" : ""} onClick={() => setSendMode("direct")}><UserCog size={16} /></button>
+          <div className="toolbar-search"><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Поиск сообщений" /></div>
         </div>
-        <div className="chat-list">
+        {sendMode !== "global" ? <div className="target-bar"><select disabled={!canSend} value={targetSteamId} onChange={(event) => setTargetSteamId(event.target.value)}><option value="">Выберите игрока</option>{state.players.filter((player) => player.status === "active").map((player) => <option key={player.steam_id} value={player.steam_id}>{player.steam_name || player.steam_id}</option>)}</select></div> : null}
+        <div className="chat-stream">
           {messages.length === 0 ? <div className="empty">Сообщений пока нет</div> : messages.map((chat) => {
             const mode = chat.target_steam_id ? "DM" : chat.is_team ? "TEAM" : chat.meta?.direction === "outgoing" ? "PANEL" : "GLOBAL";
             const author = chat.meta?.direction === "outgoing" ? String(chat.meta?.initiator_name || "panel") : nameBySteam(state.players, chat.steam_id);
             const target = chat.target_steam_id ? ` → ${nameBySteam(state.players, chat.target_steam_id)}` : "";
-            return <article className={`chat-line ${chat.meta?.direction === "outgoing" ? "outgoing" : ""}`} key={chat.id}><div><span>[{mode}]</span> <b>{author}{target}</b></div><time>{formatDate(chat.createdAt)}</time><p>{chat.text}</p></article>;
+            return <article className={`chat-row ${chat.meta?.direction === "outgoing" ? "outgoing" : ""} ${highlightBadWords && hasBadWord(chat.text || "") ? "flagged-chat" : ""}`} key={chat.id}>{showTime ? <time>{chatTime(chat.createdAt)}</time> : null}{showAvatars ? <span className="avatar tiny">{initials(author)}</span> : null}<span>[{mode}]</span><b>{author}{target}</b><p>{chat.text}</p></article>;
           })}
         </div>
-        <form className="inline-form" onSubmit={(event) => { event.preventDefault(); if (message.trim()) runAction("chat", { message, targetSteamId: targetSteamId || undefined }); setMessage(""); }}>
-          <input disabled={!canSend} value={message} onChange={(event) => setMessage(event.target.value)} placeholder={canSend ? (targetSteamId ? "Личное сообщение игроку" : "Сообщение всем игрокам") : "Нет прав на отправку"} />
-          <button disabled={!canSend} className="primary-button"><Send size={16} /> Отправить</button>
+        <form className="chat-input" onSubmit={(event) => { event.preventDefault(); if (!message.trim()) return; if (sendMode === "team") runAction("chatTeam", { steamId: targetSteamId, message }); else runAction("chat", { message, targetSteamId: sendMode === "direct" ? targetSteamId || undefined : undefined }); setMessage(""); }}>
+          <input disabled={!canSend || (sendMode !== "global" && !targetSteamId)} value={message} onChange={(event) => setMessage(event.target.value)} placeholder={canSend ? chatPlaceholder(sendMode) : "Нет прав на отправку"} />
+          <button disabled={!canSend} className="primary-button" title="Отправить"><Send size={16} /></button>
         </form>
-      </Panel>
-      <Panel icon={Bell} title="Сводка чата" subtitle="Что пришло из ChatWorker">
+      </section>
+      <aside className="settings-panel">
+        <h3>Сообщения</h3>
+        <ToggleRow label="Показывать глобальные сообщения" checked={showGlobal} onChange={setShowGlobal} />
+        <ToggleRow label="Показывать сообщения от модераторов" checked={showModerators} onChange={setShowModerators} />
+        <ToggleRow label="Показывать личные сообщения" checked={showPrivate} onChange={setShowPrivate} />
+        <ToggleRow label="Показывать командные сообщения" checked={showTeam} onChange={setShowTeam} />
+        <div className="hint-box">Панель может отправлять глобальные сообщения, личные сообщения и сообщение всей команде выбранного игрока через очередь плагина.</div>
+        <div className="panel-divider" />
+        <h3>Цензура</h3>
+        <ToggleRow label="Подсвечивать матерные слова" checked={highlightBadWords} onChange={setHighlightBadWords} />
+        <ToggleRow label="Подсвечивать слова из списка" checked={highlightCustomWords} onChange={setHighlightCustomWords} />
+        <label className="compact-label">Воспроизводить звук<select value={playSound} onChange={(event) => setPlaySound(event.target.value)}><option>Нет</option><option>Да</option></select></label>
+        <div className="panel-divider" />
+        <h3>Внешний вид</h3>
+        <ToggleRow label="Показывать время" checked={showTime} onChange={setShowTime} />
+        <ToggleRow label="Показывать аватарки игроков" checked={showAvatars} onChange={setShowAvatars} />
+        <label className="compact-label">Позиция чата<select value={chatPosition} onChange={(event) => setChatPosition(event.target.value)}><option>Центр</option><option>Слева</option></select></label>
         <div className="info-grid">
           <Info label="Всего" value={String(state.chats.length)} />
           <Info label="Командный чат" value={String(state.chats.filter((chat) => chat.is_team).length)} />
           <Info label="Личные" value={String(state.chats.filter((chat) => chat.target_steam_id).length)} />
           <Info label="С панели" value={String(state.chats.filter((chat) => chat.meta?.direction === "outgoing").length)} />
         </div>
-        <div className="keyword-list"><span>чит</span><span>софт</span><span>оскорбления</span></div>
-      </Panel>
+      </aside>
     </div>
   );
 }
@@ -782,6 +954,45 @@ function ReportsView({ state }: { state: PanelState }) {
         </table>
       </div>
     </Panel>
+  );
+}
+
+function PlayerProfileActions({ player, players, runAction }: { player: Player; players: Player[]; runAction: any }) {
+  const [message, setMessage] = useState("");
+  const [teamMessage, setTeamMessage] = useState("");
+  const [command, setCommand] = useState("status");
+  const teamNames = (player.team || []).map((steamId) => nameBySteam(players, steamId));
+  const commandTemplates = [
+    { label: "Статус", value: "status" },
+    { label: "Кик", value: "kick {steamId} \"Kicked by admin\"" },
+    { label: "Сообщить", value: "say Админ проверяет {name}" },
+    { label: "Выдать AK", value: "inventory.giveto {steamId} rifle.ak 1" },
+    { label: "Выдать аптечки", value: "inventory.giveto {steamId} syringe.medical 5" }
+  ];
+
+  return (
+    <div className="profile-tools">
+      <div className="team-strip">
+        <small>Команда</small>
+        <strong>{teamNames.length ? teamNames.join(", ") : "нет данных"}</strong>
+      </div>
+      <form className="profile-tool-row" onSubmit={(event) => { event.preventDefault(); if (message.trim()) runAction("chat", { targetSteamId: player.steam_id, message }); setMessage(""); }}>
+        <input value={message} onChange={(event) => setMessage(event.target.value)} placeholder="DM игроку" />
+        <button><Send size={14} /> DM</button>
+      </form>
+      <form className="profile-tool-row" onSubmit={(event) => { event.preventDefault(); if (teamMessage.trim()) runAction("chatTeam", { steamId: player.steam_id, message: teamMessage }); setTeamMessage(""); }}>
+        <input value={teamMessage} onChange={(event) => setTeamMessage(event.target.value)} placeholder="Сообщение всей команде" />
+        <button disabled={!player.team?.length}><Users size={14} /> Team</button>
+      </form>
+      <form className="profile-command" onSubmit={(event) => { event.preventDefault(); runAction("playerCommand", { steamId: player.steam_id, command }); }}>
+        <div className="command-templates">
+          {commandTemplates.map((item) => <button type="button" key={item.label} onClick={() => setCommand(item.value)}>{item.label}</button>)}
+        </div>
+        <label>Команда профиля<input value={command} onChange={(event) => setCommand(event.target.value)} placeholder="inventory.giveto {steamId} rifle.ak 1" /></label>
+        <small>Токены: {"{steamId}"}, {"{name}"}, {"{ip}"}, {"{coords}"}, {"{position}"}</small>
+        <button className="primary-button"><Command size={14} /> Выполнить на сервере</button>
+      </form>
+    </div>
   );
 }
 
@@ -847,14 +1058,21 @@ function SleepersView({ state }: { state: PanelState }) {
   );
 }
 
-function ArtView({ state }: { state: PanelState }) {
+function ArtView({ state, runAction }: { state: PanelState; runAction: any }) {
+  const [favoriteIds, setFavoriteIds] = useState<Record<string, boolean>>({});
   return (
     <Panel icon={ImageIcon} title="Рисунки игроков" subtitle="Signage, painted items и fireworks">
       <div className="art-grid">
         {state.signages.length === 0 ? <div className="empty">Рисунков пока нет</div> : state.signages.map((item) => (
           <article className="art-card" key={item.id}>
             {item.image ? <img alt="player signage" src={`data:image/png;base64,${item.image}`} /> : <div className="art-placeholder"><ImageIcon size={34} /></div>}
-            <strong>{nameBySteam(state.players, item.steam_id)}</strong>
+            <div className="art-card-head">
+              <strong>{nameBySteam(state.players, item.steam_id)}</strong>
+              <div className="row-actions">
+                <button title="В избранное" className={favoriteIds[item.id] ? "active" : ""} onClick={() => setFavoriteIds((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}><Heart size={15} /></button>
+                <button title="Удалить entity на сервере" className="danger-mini" disabled={!item.net_id} onClick={() => runAction("deleteEntity", { netId: item.net_id })}><Trash2 size={15} /></button>
+              </div>
+            </div>
             <small>{item.type || "signage"} · {item.square || item.position || "-"} · #{String(item.net_id || "-")}</small>
             <small>{formatDate(item.createdAt)}</small>
           </article>
@@ -864,29 +1082,95 @@ function ArtView({ state }: { state: PanelState }) {
   );
 }
 
-function BansView({ state, runAction }: { state: PanelState; runAction: any }) {
-  const entries: Array<Record<string, any>> = [
-    ...state.bans.map((ban) => ({ ...ban, key: `ban-${ban.id}`, type: "Бан", steamId: ban.steamId })),
-    ...state.mutes.map((mute) => ({ ...mute, key: `mute-${mute.id}`, type: "Мут", steamId: mute.steamId, expiredAt: mute.expiresAt }))
-  ];
+function MutesView({ state, runAction }: { state: PanelState; runAction: any }) {
   return (
-    <>
-      <div className="metric-grid two">
-        <Metric icon={Ban} color="red" label="Активные баны" value={String(state.bans.length)} sub="Сейчас действуют" />
-        <Metric icon={MessageCircle} color="orange" label="Активные муты" value={String(state.mutes.length)} sub="Сейчас действуют" />
+    <section className="dense-main">
+      <div className="dense-toolbar">
+        <div><h2>Муты</h2><p>Активные ограничения чата и голоса</p></div>
+        <MiniStat label="Активно" value={state.mutes.length} />
       </div>
-      <Panel icon={Ban} title="Активные ограничения" subtitle="Баны и муты bridge">
-        <div className="event-list">
-          {entries.length === 0 ? <div className="empty">Ограничений нет</div> : entries.map((entry) => <article className="event-item" key={entry.key}><strong>{entry.type}: {nameBySteam(state.players, entry.steamId)}</strong><small>{entry.reason} · до {entry.expiredAt ? formatDate(entry.expiredAt) : "навсегда"}</small><button onClick={() => runAction(entry.type === "Бан" ? "unban" : "unmute", { steamId: entry.steamId })}>Снять</button></article>)}
-        </div>
-      </Panel>
-    </>
+      <div className="table-wrap dense-table">
+        <table>
+          <thead><tr><th>Дата</th><th>Игрок</th><th>Срок</th><th>Причина</th><th /></tr></thead>
+          <tbody>
+            {state.mutes.length === 0 ? <tr><td colSpan={5}>Мутов нет</td></tr> : state.mutes.map((mute) => (
+              <tr key={mute.id}>
+                <td>{formatDate(mute.createdAt)}</td>
+                <td><PlayerMini players={state.players} steamId={mute.steamId} /></td>
+                <td>до {mute.expiresAt ? formatDate(mute.expiresAt) : "навсегда"}</td>
+                <td><span className="reason-pill">{mute.reason || "Без причины"}</span></td>
+                <td><button className="success-icon" onClick={() => runAction("unmute", { steamId: mute.steamId })}><Mic size={16} /></button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 }
 
-function ChecksView({ players, runAction }: { players: Player[]; runAction: any }) {
+function BlocksView({ state, runAction }: { state: PanelState; runAction: any }) {
+  const relatedByReason = (reason: string) => state.bans.filter((ban) => ban.reason === reason).slice(0, 5);
+  const [selected, setSelected] = useState<Record<string, any> | null>(null);
+  return (
+    <section className="dense-main">
+      <div className="dense-toolbar">
+        <div><h2>Блокировки</h2><p>Баны, причины и быстрые действия</p></div>
+        <MiniStat label="Активно" value={state.bans.length} />
+      </div>
+      <div className="table-wrap dense-table">
+        <table>
+          <thead><tr><th>Дата</th><th>Заблокировал</th><th>Игрок</th><th>Сервер</th><th>Срок</th><th>Причина</th><th /></tr></thead>
+          <tbody>
+            {state.bans.length === 0 ? <tr><td colSpan={7}>Блокировок нет</td></tr> : state.bans.map((ban) => (
+              <tr key={ban.id} onClick={() => setSelected(ban)}>
+                <td>{formatDate(ban.createdAt)}</td>
+                <td>Панель<small>Rust .NET</small></td>
+                <td><PlayerMini players={state.players} steamId={ban.steamId} /></td>
+                <td>На всех</td>
+                <td>{ban.expiredAt ? `до ${formatDate(ban.expiredAt)}` : "Навсегда"}</td>
+                <td><span className="reason-pill">{ban.reason || "Без причины"}</span></td>
+                <td><button className="success-icon" onClick={(event) => { event.stopPropagation(); runAction("unban", { steamId: ban.steamId }); }}><Lock size={16} /></button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {selected ? <BanModal ban={selected} related={relatedByReason(selected.reason)} state={state} runAction={runAction} onClose={() => setSelected(null)} /> : null}
+    </section>
+  );
+}
+
+function ChecksView({ state, players, runAction }: { state: PanelState; players: Player[]; runAction: any }) {
   const [steamId, setSteamId] = useState(players[0]?.steam_id || "");
-  return <Panel icon={Search} title="Проверки" subtitle="Вызов игрока на проверку через notice"><div className="form-grid"><label>Игрок<select value={steamId} onChange={(event) => setSteamId(event.target.value)}>{players.map((player) => <option key={player.steam_id} value={player.steam_id}>{player.steam_name || player.steam_id}</option>)}</select></label><button onClick={() => runAction("noticeGet", { steamId })}>Запросить статус</button><button className="primary-button" onClick={() => runAction("notice", { steamId, value: true })}>Показать проверку</button><button onClick={() => runAction("notice", { steamId, value: false })}>Скрыть проверку</button><button onClick={() => runAction("checkStarted", { steamId, broadcast: true })}>Объявить старт</button><button onClick={() => runAction("checkFinished", { steamId, isClear: true, broadcast: true })}>Объявить clean</button></div></Panel>;
+  const checks = state.events.filter((event) => ["check-started", "check-finished", "notice"].includes(event.type) || String(event.title || "").toLowerCase().includes("check"));
+  return (
+    <div className="moderation-layout">
+      <section className="dense-main">
+        <div className="dense-toolbar">
+          <div><h2>Проверки</h2><p>Запуск, завершение и журнал вызовов</p></div>
+          <select value={steamId} onChange={(event) => setSteamId(event.target.value)}>{players.map((player) => <option key={player.steam_id} value={player.steam_id}>{player.steam_name || player.steam_id}</option>)}</select>
+        </div>
+        <div className="check-timeline">
+          {checks.length === 0 ? <div className="empty">Истории проверок пока нет</div> : checks.slice(0, 20).map((event) => (
+            <article className="timeline-row" key={event.id}>
+              <time>{formatDate(event.createdAt)}</time>
+              <span />
+              <div><strong>{event.title}</strong><p>{compact(event.details)}</p></div>
+            </article>
+          ))}
+        </div>
+      </section>
+      <aside className="settings-panel">
+        <h3>Действия</h3>
+        <button onClick={() => runAction("noticeGet", { steamId })}>Запросить статус</button>
+        <button className="primary-button" onClick={() => runAction("notice", { steamId, value: true })}>Показать табличку</button>
+        <button onClick={() => runAction("notice", { steamId, value: false })}>Скрыть табличку</button>
+        <button onClick={() => runAction("checkStarted", { steamId, broadcast: true })}>Объявить старт</button>
+        <button onClick={() => runAction("checkFinished", { steamId, isClear: true, broadcast: true })}>Нарушений нет</button>
+      </aside>
+    </div>
+  );
 }
 
 function ActionsView({ players, can, runAction }: { players: Player[]; can: (permission: Permission) => boolean; runAction: any }) {
@@ -986,11 +1270,124 @@ function SettingsView({ state, notify }: { state: PanelState; notify: (message: 
   return <Panel icon={Settings} title="Настройки плагина" subtitle="Вставьте эти URL в oxide/config/RustApp.json"><pre>{config}</pre><div className="info-grid"><Info label="API" value={`${state.meta.publicBaseUrl}/api/rust`} /><Info label="Queue" value={`${state.meta.publicBaseUrl}/api/rust/queue`} /><Info label="Ban sync" value={`${state.meta.publicBaseUrl}/api/rust/ban`} /><Info label="Plugin" value={state.meta.pluginOnline ? "online" : "offline"} tone={state.meta.pluginOnline ? "good" : "bad"} /></div><button className="primary-button" onClick={() => navigator.clipboard.writeText(config).then(() => notify("Конфиг скопирован"))}>Скопировать</button></Panel>;
 }
 
+function StatisticsView({ state }: { state: PanelState }) {
+  const active = state.players.filter((player) => player.status === "active");
+  return (
+    <section className="stats-page">
+      <div className="stats-head">
+        <h2>Статистика</h2>
+        <p>Мониторинг ключевых показателей проекта</p>
+      </div>
+      <div className="metric-grid four compact-metrics">
+        <Metric icon={Users} color="green" label="Игроки онлайн" value={String(active.length)} sub="Сейчас на сервере" />
+        <Metric icon={Flag} color="orange" label="Репорты" value={String(state.reports.length)} sub="Всего принято" />
+        <Metric icon={Ban} color="red" label="Блокировки" value={String(state.bans.length)} sub="Активные баны" />
+        <Metric icon={Clock} color="blue" label="Очередь" value={String(state.tasks.filter((task) => task.status === "pending").length)} sub="Ожидают плагин" />
+      </div>
+      <div className="chart-grid large">
+        <SparkChart title="Онлайн" data={state.metricsHistory} field="online" color="#22c55e" suffix="" />
+        <SparkChart title="Очередь" data={state.metricsHistory} field="queued" color="#38bdf8" suffix="" />
+        <SparkChart title="Средний ping" data={state.metricsHistory} field="avgPing" color="#f59e0b" suffix="ms" />
+        <SparkChart title="Pending tasks" data={state.metricsHistory} field="pendingTasks" color="#ef4444" suffix="" />
+      </div>
+      <div className="chart-grid large">
+        <SparkChart title="Репорты" data={state.metricsHistory} field="reports" color="#a78bfa" suffix="" />
+        <SparkChart title="Киллы" data={state.metricsHistory} field="kills" color="#fb7185" suffix="" />
+        <SparkChart title="Alerts" data={state.metricsHistory} field="alerts" color="#f97316" suffix="" />
+        <SparkChart title="Подключаются" data={state.metricsHistory} field="joining" color="#14b8a6" suffix="" />
+      </div>
+    </section>
+  );
+}
+
+function ServersView({ state }: { state: PanelState }) {
+  const server = state.server || {};
+  const online = Number(server.online ?? state.players.filter((player) => player.status === "active").length);
+  return (
+    <div className="servers-layout">
+      <ServerHero server={server} players={online} fill={Math.min(100, Math.round((online / Math.max(1, Number(server.slots || online || 1))) * 100))} />
+      <div className="info-grid">
+        <Info label="Plugin" value={state.meta.pluginOnline ? "online" : "offline"} tone={state.meta.pluginOnline ? "good" : "bad"} />
+        <Info label="Последний сигнал" value={state.meta.lastPluginSeenAt ? formatDate(state.meta.lastPluginSeenAt) : "-"} />
+        <Info label="Protocol" value={String(server.protocol || "-")} />
+        <Info label="Performance" value={server.performance ? `${Number(server.performance).toFixed(3)} ms` : "-"} />
+        <Info label="Map" value={String(server.level || "-")} />
+        <Info label="Port" value={String(server.port || "-")} />
+      </div>
+    </div>
+  );
+}
+
+function AuditView({ state, filter, setFilter }: { state: PanelState; filter: string; setFilter: (value: string) => void }) {
+  const events = state.events.filter((event) => !filter || event.type === filter);
+  const types = Array.from(new Set(state.events.map((event) => event.type).filter(Boolean))).slice(0, 20);
+  return (
+    <section className="dense-main">
+      <div className="dense-toolbar">
+        <div><h2>Журнал аудита</h2><p>События панели, сотрудников и плагина</p></div>
+        <select value={filter} onChange={(event) => setFilter(event.target.value)}><option value="">Все события</option>{types.map((type) => <option key={type} value={type}>{type}</option>)}</select>
+      </div>
+      <div className="audit-list">
+        {events.length === 0 ? <div className="empty">Событий нет</div> : events.map((event) => (
+          <article className="audit-row" key={event.id}>
+            <Activity size={18} />
+            <span className="avatar">{initials(event.type || "ev")}</span>
+            <div><strong>{event.title}</strong><small>{formatDate(event.createdAt)}</small></div>
+            <code>{compact(event.details)}</code>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function IntegrationsView({ state }: { state: PanelState }) {
+  const [activeTab, setActiveTab] = useState("Discord");
+  const [enabled, setEnabled] = useState<Record<string, boolean>>({});
+  const cards = [
+    { title: "Репорты", subtitle: "Жалобы на игроков будут дублироваться в Discord", count: state.reports.length, endpoint: "reports" },
+    { title: "Проверки", subtitle: "Оповещения о начале и завершении проверок", count: state.events.filter((event) => String(event.type).includes("check")).length, endpoint: "checks" },
+    { title: "Блокировки", subtitle: "Оповещения о манипуляциях с банами", count: state.bans.length, endpoint: "ban" },
+    { title: "Баны на других проектах", subtitle: "Дублировать оповещения о входах и киках игроков", count: state.alerts.length, endpoint: "alerts" },
+    { title: "Подозрительные действия сотрудников", subtitle: "Оповещение о большом количестве блокировок за период", count: state.events.filter((event) => event.type === "task").length, endpoint: "custom-alert" }
+  ];
+  return (
+    <section className="integration-page">
+      <h2>Интеграции</h2>
+      <p>Расширьте возможности панели с помощью внешних уведомлений</p>
+      <div className="integration-tabs"><button className={activeTab === "Discord" ? "active" : ""} onClick={() => setActiveTab("Discord")}>Discord</button><button className={activeTab === "Rust Cheat Check" ? "active" : ""} onClick={() => setActiveTab("Rust Cheat Check")}>Rust Cheat Check</button></div>
+      <h3>{activeTab === "Discord" ? "Вебхуки" : "Проверка внешних банов"}</h3>
+      <div className="integration-list">
+        {cards.map((card) => (
+          <article className="integration-card" key={card.title}>
+            <span className="panel-icon"><Plug size={18} /></span>
+            <div><strong>{card.title}</strong><small>{card.subtitle}</small></div>
+            <span className="count-badge">{card.count}</span>
+            <ToggleRow label="" checked={Boolean(enabled[card.title])} onChange={(checked) => setEnabled((prev) => ({ ...prev, [card.title]: checked }))} />
+            <button className="icon-button" title="Скопировать URL" onClick={() => navigator.clipboard.writeText(`${state.meta.publicBaseUrl}/api/rust/plugin/${card.endpoint}`)}><MoreVertical size={17} /></button>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProjectView({ state }: { state: PanelState }) {
+  return <Panel icon={Building2} title="Общее" subtitle="Сводка проекта"><div className="info-grid"><Info label="Название" value={state.server?.name || state.server?.hostname || "Rust server"} /><Info label="Base URL" value={state.meta.publicBaseUrl} /><Info label="Игроков в state" value={String(state.players.length)} /><Info label="State updates" value={String(state.counters.stateUpdates || 0)} /></div></Panel>;
+}
+
+function BillingView() {
+  return <Panel icon={CreditCard} title="Биллинг" subtitle="Локальная панель без внешнего тарифа"><div className="empty">Раздел оставлен для будущих тарифов, лимитов персонала и коммерческих интеграций.</div></Panel>;
+}
+
 function QuickActions({ players, steamId, setSteamId, runAction }: any) {
   const [action, setAction] = useState("chat");
   const [reason, setReason] = useState("");
   const [duration, setDuration] = useState("30m");
-  return <form className="form-grid" onSubmit={(event) => { event.preventDefault(); const payload: any = { steamId, reason, duration, message: reason }; runAction(action, payload); }}><label>Игрок<select value={steamId} onChange={(event) => setSteamId(event.target.value)}>{players.map((player: Player) => <option key={player.steam_id} value={player.steam_id}>{player.steam_name || player.steam_id}</option>)}</select></label><label>Действие<select value={action} onChange={(event) => setAction(event.target.value)}><option value="chat">Сообщение</option><option value="kick">Kick</option><option value="mute">Mute</option><option value="ban">Ban</option><option value="unmute">Unmute</option><option value="unban">Unban</option></select></label><label className="span-2">Текст / причина<input value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Причина или сообщение" /></label><label>Время<input value={duration} onChange={(event) => setDuration(event.target.value)} /></label><button className="primary-button">Выполнить</button></form>;
+  const [broadcast, setBroadcast] = useState(false);
+  const [banIp, setBanIp] = useState(false);
+  const [globalBan, setGlobalBan] = useState(false);
+  return <form className="form-grid" onSubmit={(event) => { event.preventDefault(); const payload: any = { steamId, reason, duration, message: reason, broadcast, banIp, global: globalBan }; runAction(action, payload); }}><label>Игрок<select value={steamId} onChange={(event) => setSteamId(event.target.value)}>{players.map((player: Player) => <option key={player.steam_id} value={player.steam_id}>{player.steam_name || player.steam_id}</option>)}</select></label><label>Действие<select value={action} onChange={(event) => setAction(event.target.value)}><option value="chat">Сообщение</option><option value="kick">Кик</option><option value="mute">Выдать мут</option><option value="ban">Заблокировать</option><option value="unmute">Снять мут</option><option value="unban">Разблокировать</option></select></label><label className="span-2">Текст / причина<input value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Причина или сообщение" /></label><label>Время<input value={duration} onChange={(event) => setDuration(event.target.value)} /></label><ToggleRow label="Оповестить чат" checked={broadcast} onChange={setBroadcast} /><ToggleRow label="Бан по IP" checked={banIp} onChange={setBanIp} /><ToggleRow label="Глобально" checked={globalBan} onChange={setGlobalBan} /><button className="primary-button">Выполнить</button></form>;
 }
 
 function GiveForm({ players, runAction, disabled }: any) {
@@ -1097,8 +1494,160 @@ function ServerCard({ server, players }: { server: Record<string, any>; players:
   return <article className="server-card"><div><strong>{server.name || server.hostname || "Rust server"}</strong><small>{server.level || "Map unknown"}</small></div><span className="online-dot">Онлайн</span><p>{players}/{server.slots || 0}</p><div className="progress"><i style={{ width: `${Math.min(100, (players / Math.max(1, Number(server.slots || 1))) * 100)}%` }} /></div><small>Plugin {server.version || "-"}</small></article>;
 }
 
+function Avatar({ player, profile, size = "" }: { player: Player; profile?: SteamProfile; size?: "large" | "tiny" | "" }) {
+  const image = profile?.avatarFull || profile?.avatarMedium || profile?.avatar || String(player.meta?.fields?.avatar_url || player.meta?.tags?.avatar_url || "");
+  const label = profile?.name || player.steam_name || player.steam_id;
+  return (
+    <span className={`avatar ${size}`}>
+      {image ? <img src={image} alt={label} loading="lazy" /> : initials(label)}
+    </span>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: string | number }) {
+  return <span className="mini-stat"><small>{label}</small><strong>{value}</strong></span>;
+}
+
+function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (checked: boolean) => void }) {
+  return <label className="toggle-row">{label ? <span>{label}</span> : <span />}<input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} /><i /></label>;
+}
+
+function PlayerMini({ players, steamId, steamProfiles = {} }: { players: Player[]; steamId?: string; steamProfiles?: Record<string, SteamProfile> }) {
+  const name = nameBySteam(players, steamId);
+  const player = players.find((item) => item.steam_id === steamId);
+  return <div className="player-cell">{player ? <Avatar player={player} profile={steamProfiles[player.steam_id]} /> : <span className="avatar">{initials(name)}</span>}<div><strong>{steamProfiles[String(steamId)]?.name || name}</strong><small>{steamId || "-"}</small></div></div>;
+}
+
+function PlayerDrawer({ player, state, runAction, onClose, steamProfiles }: { player: Player; state: PanelState; runAction: any; onClose: () => void; steamProfiles: Record<string, SteamProfile> }) {
+  const [activeTab, setActiveTab] = useState("Обзор");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const profile = steamProfiles[player.steam_id];
+  const reports = state.reports.filter((report) => report.initiator_steam_id === player.steam_id || report.target_steam_id === player.steam_id);
+  const bans = state.bans.filter((ban) => ban.steamId === player.steam_id);
+  const mutes = state.mutes.filter((mute) => mute.steamId === player.steam_id);
+  const kills = state.kills.filter((kill) => kill.initiator_steam_id === player.steam_id || kill.target_steam_id === player.steam_id);
+  const signs = state.signages.filter((sign) => sign.steam_id === player.steam_id);
+  const events = state.events.filter((event) => compact(event.details).includes(player.steam_id)).slice(0, 20);
+  return (
+    <div className="drawer-overlay" onClick={onClose}>
+      <aside className="player-drawer" onClick={(event) => event.stopPropagation()}>
+        <div className="profile-side">
+          <div className="profile-player">
+            <Avatar player={player} profile={profile} size="large" />
+            <strong>{profile?.name || player.steam_name || "unknown"}</strong>
+            <small>{player.status === "active" ? `был сейчас` : player.status || "offline"}</small>
+          </div>
+          <div className="profile-tabs">
+            {["Обзор", "Команда", "Репорты", "Статистика", "Лог активности", "Оповещения", "Рисунки", "Проверки", "Муты", "Блокировки", "Разрешения"].map((item) => <button key={item} className={activeTab === item ? "active" : ""} onClick={() => setActiveTab(item)}>{item}</button>)}
+          </div>
+        </div>
+        <div className="profile-content">
+          <div className="drawer-actions">
+            <button title="Скопировать SteamID" onClick={() => navigator.clipboard.writeText(player.steam_id)}><Copy size={16} /></button>
+            <button title="Профиль Steam" onClick={() => window.open(profile?.profileUrl || `https://steamcommunity.com/profiles/${player.steam_id}`, "_blank")}><ExternalLink size={16} /></button>
+            <button title="Еще" onClick={() => setMenuOpen(!menuOpen)}><MoreVertical size={16} /></button>
+            <button className="drawer-close" onClick={onClose}>Закрыть</button>
+            {menuOpen ? <div className="action-menu">
+              <button onClick={() => runAction("notice", { steamId: player.steam_id, value: true })}>Начать проверку</button>
+              <button onClick={() => navigator.clipboard.writeText(player.steam_id)}>Скопировать SteamID</button>
+              <button onClick={() => runAction("chat", { targetSteamId: player.steam_id, message: "Сообщение от администрации" })}>Сообщения</button>
+              <button onClick={() => runAction("kick", { steamId: player.steam_id, reason: "Kicked by admin" })}>Кик</button>
+              <button className="danger-text" onClick={() => runAction("mute", { steamId: player.steam_id, reason: "Выдано из профиля", duration: "30m" })}>Выдать мут</button>
+              <button className="danger-text" onClick={() => runAction("ban", { steamId: player.steam_id, reason: "Выдано из профиля", duration: "permanent" })}>Заблокировать</button>
+            </div> : null}
+          </div>
+          {activeTab === "Обзор" ? <>
+            <div className="profile-section">
+              <h3>Статистика <small>за 7 дней</small></h3>
+              <div className="stat-strip"><MiniStat label="K/D" value="1.00" /><MiniStat label="Убийств" value={state.kills.filter((kill) => kill.initiator_steam_id === player.steam_id).length} /><MiniStat label="В голову" value={state.kills.filter((kill) => kill.initiator_steam_id === player.steam_id && kill.is_headshot).length} /><MiniStat label="Смертей" value={state.kills.filter((kill) => kill.target_steam_id === player.steam_id).length} /></div>
+            </div>
+            <div className="profile-section">
+              <h3>Об игроке</h3>
+              <div className="info-grid">
+                <Info label="Игра на" value={state.server?.name || state.server?.hostname || "Rust server"} />
+                <Info label="SteamID" value={player.steam_id} />
+                <Info label="IP адрес" value={player.ip || "-"} />
+                <Info label="Пинг" value={`${player.ping ?? 0}ms`} />
+                <Info label="Страна, город" value={countryLabel(profile?.countryCode || player.language)} />
+                <Info label="Провайдер" value={String(player.meta?.fields?.provider || player.meta?.tags?.provider || "-")} />
+              </div>
+            </div>
+            <div className="profile-section">
+              <h3>Информация из Steam</h3>
+              <div className="info-grid">
+                <Info label="Приватность" value={steamVisibility(profile)} />
+                <Info label="Аккаунт создан" value={profile?.createdAt ? formatDate(profile.createdAt) : "Информация скрыта"} />
+                <Info label="Последний выход" value={profile?.lastLogoffAt ? formatDate(profile.lastLogoffAt) : "Информация скрыта"} />
+                <Info label="Gamebans / VAC" value={steamBanLabel(profile)} tone={profile?.bans?.vacBanned || Number(profile?.bans?.numberOfGameBans || 0) > 0 ? "bad" : "good"} />
+              </div>
+            </div>
+            <PlayerProfileActions player={player} players={state.players} runAction={runAction} />
+            <div className="profile-section">
+              <h3>Связанные данные</h3>
+              <div className="stat-strip"><MiniStat label="Репорты" value={reports.length} /><MiniStat label="Муты" value={mutes.length} /><MiniStat label="Блокировки" value={bans.length} /><MiniStat label="Команда" value={player.team?.length || 0} /></div>
+            </div>
+          </> : null}
+          {activeTab === "Команда" ? <ProfileList title="Команда" rows={(player.team || []).map((steamId) => ({ title: nameBySteam(state.players, steamId), meta: steamId }))} empty="Команда не найдена" /> : null}
+          {activeTab === "Репорты" ? <ProfileList title="Репорты" rows={reports.map((report) => ({ title: report.reason || "Репорт", meta: `${nameBySteam(state.players, report.initiator_steam_id)} -> ${nameBySteam(state.players, report.target_steam_id)}`, text: report.message }))} empty="Репортов нет" /> : null}
+          {activeTab === "Статистика" ? <ProfileList title="Киллы / смерти" rows={kills.map((kill) => ({ title: `${nameBySteam(state.players, kill.initiator_steam_id)} -> ${nameBySteam(state.players, kill.target_steam_id)}`, meta: `${kill.weapon || "weapon"} · ${kill.distance || 0}m`, text: kill.is_headshot ? "headshot" : "body" }))} empty="Боевой истории нет" /> : null}
+          {activeTab === "Лог активности" ? <ProfileList title="Лог активности" rows={events.map((event) => ({ title: event.title, meta: formatDate(event.createdAt), text: compact(event.details) }))} empty="Событий по игроку нет" /> : null}
+          {activeTab === "Оповещения" ? <ProfileList title="Оповещения" rows={state.alerts.filter((alert) => compact(alert).includes(player.steam_id)).map((alert) => ({ title: alert.type || "alert", meta: formatDate(alert.createdAt), text: compact(alert.meta || alert) }))} empty="Оповещений нет" /> : null}
+          {activeTab === "Рисунки" ? <ProfileList title="Рисунки" rows={signs.map((sign) => ({ title: sign.type || "signage", meta: `${sign.square || sign.position || "-"} · #${sign.net_id || "-"}` }))} empty="Рисунков нет" /> : null}
+          {activeTab === "Проверки" ? <div className="profile-section"><h3>Проверки</h3><div className="profile-list"><button onClick={() => runAction("notice", { steamId: player.steam_id, value: true })}>Показать табличку проверки</button><button onClick={() => runAction("checkStarted", { steamId: player.steam_id, broadcast: true })}>Объявить старт</button><button onClick={() => runAction("checkFinished", { steamId: player.steam_id, isClear: true, broadcast: true })}>Завершить без нарушений</button></div></div> : null}
+          {activeTab === "Муты" ? <ProfileList title="Муты" rows={mutes.map((mute) => ({ title: mute.reason, meta: `до ${formatDate(mute.expiresAt)}` }))} empty="Мутов нет" /> : null}
+          {activeTab === "Блокировки" ? <ProfileList title="Блокировки" rows={bans.map((ban) => ({ title: ban.reason, meta: ban.expiredAt ? `до ${formatDate(ban.expiredAt)}` : "Навсегда" }))} empty="Блокировок нет" /> : null}
+          {activeTab === "Разрешения" ? <div className="profile-section"><h3>Разрешения</h3><div className="info-grid"><Info label="Build" value={player.can_build ? "Да" : "Нет"} /><Info label="Raid block" value={player.is_raiding ? "Да" : "Нет"} /><Info label="No license" value={player.no_license ? "Да" : "Нет"} /><Info label="Alive" value={player.is_alive ? "Да" : "Нет"} /></div></div> : null}
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+function BanModal({ ban, related, state, runAction, onClose }: { ban: Record<string, any>; related: Array<Record<string, any>>; state: PanelState; runAction: any; onClose: () => void }) {
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <section className="ban-modal" onClick={(event) => event.stopPropagation()}>
+        <header><div><h3>Бан #{ban.id}</h3><p>игрок "{nameBySteam(state.players, ban.steamId)}"</p></div><span className="avatar large">{initials(nameBySteam(state.players, ban.steamId))}</span></header>
+        <div className="notice-line">Панель заблокировала {formatDate(ban.createdAt)}</div>
+        <div className="info-grid">
+          <Info label="Причина" value={ban.reason || "-"} />
+          <Info label="Дата блокировки" value={formatDate(ban.createdAt)} />
+          <Info label="Срок блокировки" value={ban.expiredAt ? formatDate(ban.expiredAt) : "Навсегда"} />
+          <Info label="Сервер" value="На всех" />
+        </div>
+        <h3>Связанные блокировки</h3>
+        <div className="related-list">{related.map((item) => <article key={item.id}><PlayerMini players={state.players} steamId={item.steamId} /><ExternalLink size={15} /></article>)}</div>
+        <footer><button onClick={() => runAction("unban", { steamId: ban.steamId })}>Разблокировать</button><button onClick={onClose}>Закрыть</button></footer>
+      </section>
+    </div>
+  );
+}
+
+function ProfileList({ title, rows, empty }: { title: string; rows: Array<{ title: string; meta?: string; text?: string }>; empty: string }) {
+  return (
+    <div className="profile-section">
+      <h3>{title}</h3>
+      <div className="profile-list">
+        {rows.length === 0 ? <div className="empty">{empty}</div> : rows.map((row, index) => (
+          <article key={`${row.title}-${index}`}>
+            <strong>{row.title}</strong>
+            {row.meta ? <small>{row.meta}</small> : null}
+            {row.text ? <p>{row.text}</p> : null}
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Status({ status }: { status?: string }) {
   return <span className={`status ${status === "active" ? "good" : "warn"}`}>{status === "active" ? "Онлайн" : status || "unknown"}</span>;
+}
+
+function PingBadge({ ping }: { ping?: number }) {
+  const value = Number(ping || 0);
+  const tone = value <= 80 ? "good" : value <= 150 ? "warn" : "bad";
+  return <span className={`ping-badge ${tone}`}>{value}ms</span>;
 }
 
 function Flags({ player }: { player: Player }) {
@@ -1130,6 +1679,17 @@ function formatDate(value?: number) {
   return new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(value));
 }
 
+function chatTime(value?: number) {
+  if (!value) return "--:--";
+  return new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+}
+
+function avgPingFor(players: Player[]) {
+  const withPing = players.filter((player) => Number(player.ping || 0) > 0);
+  if (!withPing.length) return 0;
+  return Math.round(withPing.reduce((sum, player) => sum + Number(player.ping || 0), 0) / withPing.length);
+}
+
 function formatDuration(value: number) {
   if (!value || value < 1000) return "0s";
   const total = Math.floor(value / 1000);
@@ -1139,11 +1699,58 @@ function formatDuration(value: number) {
   return `${minutes}m ${total % 60}s`;
 }
 
+function chatPlaceholder(mode: "global" | "direct" | "team") {
+  if (mode === "team") return "Сообщение команде выбранного игрока";
+  if (mode === "direct") return "Личное сообщение игроку";
+  return "Сообщение всем игрокам";
+}
+
+function hasBadWord(value: string) {
+  const text = value.toLowerCase();
+  return ["чит", "cheat", "soft", "софт", "оск", "еб", "сука", "бля"].some((word) => text.includes(word));
+}
+
+function countryLabel(value?: string) {
+  if (!value) return "-";
+  const code = value.trim().toUpperCase();
+  if (code.length !== 2) return code;
+  try {
+    return new Intl.DisplayNames(["ru"], { type: "region" }).of(code) || code;
+  } catch {
+    return code;
+  }
+}
+
+function steamVisibility(profile?: SteamProfile) {
+  if (!profile) return "Нужен STEAM_WEB_API_KEY";
+  if (profile.visibility === 3) return "Открыт";
+  if (profile.visibility === 2) return "Только друзья";
+  if (profile.visibility === 1) return "Закрыт";
+  return "Информация скрыта";
+}
+
+function steamBanLabel(profile?: SteamProfile) {
+  if (!profile?.bans) return "Информация скрыта";
+  const vac = Number(profile.bans.numberOfVacBans || 0);
+  const game = Number(profile.bans.numberOfGameBans || 0);
+  if (!vac && !game && !profile.bans.vacBanned) return "Банов нет";
+  return `VAC: ${vac}, Game: ${game}`;
+}
+
+function groupTabs(items: typeof tabs) {
+  return items.reduce<Record<string, typeof tabs>>((acc, item) => {
+    const group = item.group || "Разделы";
+    acc[group] ??= [];
+    acc[group].push(item);
+    return acc;
+  }, {});
+}
+
 function splitTargets(value: string) {
   return value.split(/[,\s]+/).map((item) => item.trim()).filter(Boolean);
 }
 
 function compact(value: unknown) {
-  const text = typeof value === "string" ? value : JSON.stringify(value);
+  const text = typeof value === "string" ? value : JSON.stringify(value ?? null);
   return text.length > 180 ? `${text.slice(0, 180)}...` : text;
 }
