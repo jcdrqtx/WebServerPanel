@@ -94,7 +94,7 @@ export function persistStore() {
 
 export function ensureBootstrapUser() {
   if (store.users.length > 0) return;
-  const password = process.env.BOOTSTRAP_ADMIN_PASSWORD || "admin123";
+  const password = process.env.BOOTSTRAP_ADMIN_PASSWORD || "admin1234";
   store.users.push({
     id: crypto.randomUUID(),
     username: "admin",
